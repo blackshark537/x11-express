@@ -17,8 +17,8 @@ let port = 3000;
 let Database = 'x11';
 
 //  BODY-PARSE
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 //  CORS
 app.use(cors());
@@ -32,11 +32,11 @@ const options = {
     maxAge: '1d',
     redirect: false,
     setHeaders: function (res, path, stat) {
-      res.set('x-timestamp', Date.now())
+      res.set('x-timestamp', Date.now());
     }
 }
 
-app.use(express.static('public', options))
+app.use(express.static('public', options));
 
 //  X11 FACTORY
 try {
@@ -65,7 +65,7 @@ try {
                         const middlewareCode = _middleware.data.code;
                         app.use(route, function(req,res, next){
                             
-                            //  VIRTUAL CONTEXT
+                            //  VM CONTEXT
                             const context = vm.createContext({
                                 req, res, next,
                                 logs: [],
@@ -96,7 +96,6 @@ try {
         
                 if(_ctrl){
                     try {
-                        console.log("Route: " + method, route);
                         const _schema = _ctrl.outputs['output_1']['connections'].map(el=> el.node);
                         app[method](route, (req, res, next)=>{
                             try {

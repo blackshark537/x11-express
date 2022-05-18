@@ -1,4 +1,5 @@
 'use strict';
+
 //  REQUIRE MODULES
 const model = require('../model/model');
 const fs = require('fs');
@@ -6,11 +7,11 @@ const fs = require('fs');
 //  LOAD SCHEMA
 const schema = JSON.parse(fs.readFileSync('schema.json'));
 
-//  CONTROLLER FUNCTIONS
 /**
  * 
  * @param {Express.Request} req 
  * @param {Express.Response} res 
+ * @param {Express.Next} next 
  */
 const findAll = async (req, res, next)=>{
     try {
@@ -40,6 +41,7 @@ const findAll = async (req, res, next)=>{
  * 
  * @param {Express.Request} req 
  * @param {Express.Response} res 
+ * @param {Express.Next} next 
  */
 const findOne = async(req, res, next)=>{
     try {
@@ -58,6 +60,7 @@ const findOne = async(req, res, next)=>{
  * 
  * @param {Express.Request} req 
  * @param {Express.Response} res 
+ * @param {Express.Next} next 
  */
 const create = async (req, res, next)=>{
     try {
@@ -93,6 +96,7 @@ const create = async (req, res, next)=>{
  * 
  * @param {Express.Request} req 
  * @param {Express.Response} res 
+ * @param {Express.Next} next 
  */
 const update = async(req, res, next)=>{
     try {
@@ -108,6 +112,7 @@ const update = async(req, res, next)=>{
  * 
  * @param {Express.Request} req 
  * @param {Express.Response} res 
+ * @param {Express.Next} next 
  */
 const del = async (req, res, next)=>{
     try {
@@ -122,7 +127,7 @@ const del = async (req, res, next)=>{
  * 
  * @param {Express.Request} req 
  * @param {Express.Response} res 
- * @param {Express.next} next 
+ * @param {Express.Next} next 
  */
 const dropCollection = async (req,res,next)=>{
     try {
@@ -141,16 +146,13 @@ const dropCollection = async (req,res,next)=>{
  * 
  * @private
  * @param {DrawFlow.Node} node 
- * @param {any} body Data
+ * @param {Any} body
  * @returns {Date} 
  */
 const format = (node, body)=>{
-    switch (node['type']) {
-        case 'date':
-            return new Date(body[node['name']])
-        default:
-            return body[node['name']];
-    }
+    if( node['type'] === 'date')
+        return new Date(body[node['name']]);        
+    return body[node['name']];
 }
 
 /**
@@ -167,6 +169,7 @@ const showError = (res, error)=>{
     });
 }
 
+//  CONTROLLER FUNCTIONS
 module.exports = {
     findAll,
     findOne,
