@@ -112,7 +112,7 @@ function addNodeToDrawFlow(name, pos_x, pos_y) {
 
 //  NODES TYPES DEFINITION
 function addApp(x,y){
-    const data = { "port": 3000, "mongoUri": "mongodb://localhost:27017/x11"};
+    const data = { "port": 3000, "database": "x11-Express"};
     const app = `<div class="card m-0" style="width: 18rem;">
   <div class="card-header">
     @App Configuration
@@ -127,7 +127,7 @@ function addApp(x,y){
     <div class="row">
         <div class="col">
             <label for="uri" class="form-label">Database Name</label>
-            <input class="form-control" id="uri" name="uri" type="text" placeholder="Database" df-mongoUri>
+            <input class="form-control" id="uri" name="uri" type="text" placeholder="Database" df-database>
         </div>
     </div>
   </div>

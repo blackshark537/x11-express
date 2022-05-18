@@ -1,27 +1,25 @@
-'use stric'
-//const { exec } = require('child_process');
+'use strict';
+
+//  NODE MODULES
 const fs = require('fs');
 const express = require('express');
 const mongoose = require('mongoose');
 const vm = require('vm');
 const cors = require('cors')
 
+//  REQUIRES
+const app = express();
+const bodyParser = require('body-parser');
 const controller = require('./src/controller/controller');
 
-const app = express();
-
-const bodyParser = require('body-parser');
-
-// parse application/x-www-form-urlencoded
+//  BODY-PARSE
 app.use(bodyParser.urlencoded({ extended: false }))
-
-// parse application/json
 app.use(bodyParser.json())
 
-// cors
+//  CORS
 app.use(cors());
 
-// Public Folder
+// PUBLIC FOLDER
 const options = {
     dotfiles: 'ignore',
     etag: false,
@@ -36,82 +34,92 @@ const options = {
 
 app.use(express.static('public', options))
 
-// defaul variables
+// DEFAULT VARIABLES
 const port = 3000;
 const Database = 'x11';
 
+//  X11 FACTORY
 try {
     const file = fs.readFileSync('schema.json');
-    const config = JSON.parse(file) | {};
-    const modules = Object.keys(config);
-    const cfNode = Object.values(config['Home']['data']).find(el=> el.name === 'app');
-    port = cfNode['data']['port'];
-    Database = cfNode['data']['mongoUri'];
+
+    const dfSchema = JSON.parse(file);
+    
+    const modules = Object.keys(dfSchema);
+    const _app = Object.values(dfSchema['Home']['data']).find(el=> el.name === 'app');
+
+    port = _app['data']['port'];
+    Database = _app['data']['database'];
 
     modules.forEach(m=>{
-    const nodes = Object.values(config[m].data);
-    nodes.forEach(n=>{
-        if(n.name === 'express'){
-            const _nodes = n.outputs['output_1']['connections'].map(el=> el.node);
-            const route = '/'+ m + n.data.route;
-            const method = n.data.method;
-            const _ctrl = _nodes.map(node=> config[m]['data'][node]).find(node=> node.class === 'controller');
-            const _mid = _nodes.map(node=> config[m]['data'][node]).find(node=> node.class === 'middleware');
-    
-            if(_mid){
-                try {
-                    const middlewareCode = _mid.data.code;
-                    app.use(route, function(req,res, next){
-                        const context = vm.createContext({
-                            req, res, next,
-                            logs: [],
-                            file: {
-                                name: "",
-                                data: []
-                            },
-                        });
-                        vm.runInContext(middlewareCode, context);
-                        const { logs, file } = context;
-                        logs.map(log => console.log(log));
-                        
-                        if(!file) return;
+        const nodes = Object.values(dfSchema[m].data);
+        nodes.forEach(n=>{
+            if(n.name === 'express'){
+                const route = '/'+ m + n.data.route;
+                const method = n.data.method;
 
-                        file.data.map(data=>{
-                            fs.appendFileSync(file.name, JSON.stringify(data))
-                            console.log(file.name, data);
-                        });
+                const _nodes = n.outputs['output_1']['connections'].map(el=> el.node);
+                const _ctrl = _nodes.map(node=> dfSchema[m]['data'][node]).find(node=> node.class === 'controller');
+                const _middleware = _nodes.map(node=> dfSchema[m]['data'][node]).find(node=> node.class === 'middleware');
+        
+                if(_middleware){
+                    try {
+                        const middlewareCode = _middleware.data.code;
+                        app.use(route, function(req,res, next){
+                            
+                            //  VIRTUAL CONTEXT
+                            const context = vm.createContext({
+                                req, res, next,
+                                logs: [],
+                                file: {
+                                    name: "",
+                                    data: []
+                                },
+                            });
 
-                    });
-                } catch (error) {
-                    console.error(error);
+                            //  V8 VIRTUAL MACHINE
+                            vm.runInContext(middlewareCode, context);
+                            
+                            const { logs, file } = context;
+
+                            logs.map(log => console.log(log));
+                            
+                            if(!file) return;
+
+                            file.data.map(data=>{
+                                fs.appendFileSync(file.name, JSON.stringify(data))
+                                console.log(file.name, data);
+                            });
+
+                        });
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+        
+                if(_ctrl){
+                    try {
+                        const _schema = _ctrl.outputs['output_1']['connections'].map(el=> el.node);
+                        app[method](route, (req, res)=>{
+                            try {
+                                req.query['schema'] = _schema[0];
+                                req.query['module'] = m;
+                                controller[_ctrl.data.ctrl](req, res);
+                            } catch (error) {
+                                console.error(error);
+                            }
+                        });
+                    } catch (error) {
+                        console.error(error);
+                    }
                 }
             }
-    
-            if(_ctrl){
-    
-                const _schema = _ctrl.outputs['output_1']['connections'].map(el=> el.node);
-    
-                try {
-                    app[method](route, (req, res)=>{
-                        try {
-                            req.query['schema'] = _schema[0];
-                            req.query['module'] = m;
-                            controller[_ctrl.data.ctrl](req, res);
-                        } catch (error) {
-                            console.error(error);
-                        }
-                    });
-                } catch (error) {
-                    console.error(error);
-                }
-            }
-        }
-    });
+        });
     });
 } catch (error) {
-    console.error("drawflow schema error");
+    console.error("drawflow schema empty");
 }
 
+//  DRAWFLOW MODEL HANDLE
 app.post('/model', (req, res)=>{
     fs.writeFileSync('schema.json', JSON.stringify(req.body));
     res.json({msg: 'Done!'});
@@ -123,21 +131,29 @@ app.get('/model', (req, res)=>{
   res.end();
 });
 
+//  X11-APP
 app.get('/x11', (req, res)=>{
     const f = fs.readFileSync('./public/index.html');
     res.write(f);
     res.end();
 });
 
-mongoose.connect(`mongodb://localhost:27017/${Database}`, (error)=>{
-    if(error){
-        console.error(error);
-        return;
-    }
-    console.log('MongoDB conected...');
-    console.log('Database: '+Database);
-    app.listen(port, async()=>{ 
-        console.log('x11-Express has started');
-        console.log(`Go to http://localhost:${port}/x11`);
+//  MONGO INIT
+try {
+    mongoose.connect(`mongodb://localhost:27017/${Database}`, (error)=>{
+        if(error){
+            console.error(error);
+            return;
+        }
+        console.log('MongoDB conected...');
+        console.log('Database: '+Database);
+
+        //  APP INIT
+        app.listen(port, async()=>{ 
+            console.log('x11-Express has started');
+            console.log(`Go to http://localhost:${port}/x11`);
+        });
     });
-});
+} catch (error) {
+    throw new Error(error);
+}
