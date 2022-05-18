@@ -35,8 +35,8 @@ const options = {
 app.use(express.static('public', options))
 
 // DEFAULT VARIABLES
-const port = 3000;
-const Database = 'x11';
+let port = 3000;
+let Database = 'x11';
 
 //  X11 FACTORY
 try {
@@ -98,6 +98,7 @@ try {
         
                 if(_ctrl){
                     try {
+                        console.log(method, route);
                         const _schema = _ctrl.outputs['output_1']['connections'].map(el=> el.node);
                         app[method](route, (req, res)=>{
                             try {
@@ -116,7 +117,7 @@ try {
         });
     });
 } catch (error) {
-    console.error("drawflow schema empty");
+    console.error("drawflow schema empty", error);
 }
 
 //  DRAWFLOW MODEL HANDLE

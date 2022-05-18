@@ -55,6 +55,32 @@ Parameter | Type | Description
 `file.name` | string | Name of the file
 `file.data` | Array | Data to save in file
 
+### Mongo Data Model
+Parameter | Type | Description
+--- | --- | ---
+`_id` | string | mongoose.types.objectid
+`table` | string | table name
+`data` | Object | your data
+`createdAt` | Date | created date 
+
+IE.
+```javascript
+    {
+        "_id": "6284540185fc85b40e9e7798",
+        "table": "products",
+        "data": {
+            "name": "oneplus 6t 120GB 8GB Android",
+            "price": 150,
+            "category": "phones"
+        },
+        "createdAt": "2022-05-18T02:03:45.468Z",
+    }
+```
+### Request Get filters
+```javascript
+   filters[data.param][$regex]=""
+```
+
 ## License
 
 [MIT](LICENSE)
