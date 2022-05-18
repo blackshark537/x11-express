@@ -76,9 +76,17 @@ IE.
         "createdAt": "2022-05-18T02:03:45.468Z",
     }
 ```
-### Request Get filters
+### Request query filters
 ```javascript
-   filters[data.param][$regex]=""
+    //  STRING QUERY
+    //Get by some String value
+   filters[data.param][$regex]=value
+   filters[data.param][$eq]=value
+    
+    //  CONDITIONAL
+    //Get by some Number value
+    filter=data.param&cond=$gt&numValue=value
+
 ```
 
 ## License

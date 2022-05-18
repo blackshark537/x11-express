@@ -9,7 +9,7 @@ const findAll = async (req, res)=>{
 
         const q = req.query;
         if(req.query['filter']){
-            const value = req.query['num_value']? parseInt(req.query['num_value']) : req.query['value'];
+            const value = req.query['numValue']? parseInt(req.query['numValue']) : req.query['value'];
             const cond = req.query['cond']? req.query['cond'] : '$eq';
             const key = req.query['filter'];
             q['filter'] = {}
