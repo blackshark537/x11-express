@@ -29,6 +29,10 @@ Download or clone repository.
 ```javascript
 npm i --save
 ```
+### Develop
+```javascript
+npm run develop
+```
 
 ### Running
 ```javascript
