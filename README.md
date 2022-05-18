@@ -4,19 +4,20 @@
 
 Simple flow dynamic backend framework.
 
-X11-Express uses Drawflow.js to allows you to create a backend application easily and quickly.
+X11-Express uses Drawflow.js to allow you create a backend application easily and quickly.
 
 ## Features
 - Drag Nodes
 - Config your Server Port
 - Create Modules
-- Create Rotes
+- Set Rotes
 - Set Methods
-- Custom Controllers
+- Set Controllers
 - Middleware Editor
-- Create Schema
+- Set Schema
 - Set Schema Props
-- Save your Backend Schema
+- Load Backend
+- Save your Backend
 
 ## Installation
 Download or clone repository.
