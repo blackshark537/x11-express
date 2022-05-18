@@ -136,9 +136,8 @@ mongoose.connect(`mongodb://localhost:27017/${Database}`, (error)=>{
     }
     console.log('MongoDB conected...');
     console.log('Database: '+Database);
-})
-
-app.listen(port, async()=>{ 
-  console.log('DrawFlow has started');
-  console.log(`Go to http://localhost:${port}/x11-express`);
+    app.listen(port, async()=>{ 
+        console.log('x11-Express has started');
+        console.log(`Go to http://localhost:${port}/x11`);
+    });
 });

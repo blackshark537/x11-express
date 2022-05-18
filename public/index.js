@@ -1,33 +1,32 @@
 'use strict';
-// DRAW FLOW
+//  DRAW FLOW
 const id = document.getElementById("drawflow");
 const editor = new Drawflow(id);
 editor.reroute = true;
-editor.zoom_min = 0.3
-//editor.reroute_fix_curvature = true;
-//editor.force_first_input = false;
-
+editor.zoom_min = 0.4;
 editor.start();
 
-// LOAD MODULES
+//  LOAD MODULES
 let modules = ['Home'];
 presentModules();
 
-// EDITOR MODE : LOCK | UNLOCK
+//  EDITOR MODE BUTTONS
 const lock = document.getElementById('lock');
 const unlock = document.getElementById('unlock');
 changeMode('edit');
 
+//  SET EDITOR MODE : LOCK | UNLOCK
 function changeMode(option) {
     editor.editor_mode = option;
     lock.style.display = option === 'edit'? 'block' : 'none';
     unlock.style.display = option === 'edit'? 'none' : 'block';
 }
 
-//  CODE MIRROR
+//  TEXTAREA CODE
 let _code = document.getElementById('code');
 _code.value = `\tfunction middleware(req,res,next){\t\tnext();\n\t}\tmiddleware(req, res, next);`;
 
+//  CODE MIRROR
 const cm = CodeMirror.fromTextArea(_code, {
     lineNumbers: true,
     cantEdit: true,
@@ -37,6 +36,7 @@ const cm = CodeMirror.fromTextArea(_code, {
     }
 });
 
+//  MOBILE CONFIG
 var elements = document.getElementsByClassName('drag-drawflow');
 for (var i = 0; i < elements.length; i++) {
     elements[i].addEventListener('touchend', drop, false);
@@ -50,6 +50,7 @@ function positionMobile(ev) {
     mobile_last_move = ev;
 }
 
+//  DRAG AND DROP
 function allowDrop(ev) {
     ev.preventDefault();
 }
@@ -76,6 +77,7 @@ function drop(ev) {
     }
 }
 
+//  NODE FACTORY
 function addNodeToDrawFlow(name, pos_x, pos_y) {
     if(editor.editor_mode === 'fixed') {
         return false;
@@ -107,6 +109,33 @@ function addNodeToDrawFlow(name, pos_x, pos_y) {
       }
 }
 
+
+//  NODES TYPES DEFINITION
+function addApp(x,y){
+    const data = { "port": 3000, "mongoUri": "mongodb://localhost:27017/x11"};
+    const app = `<div class="card m-0" style="width: 18rem;">
+  <div class="card-header">
+    @App Configuration
+  </div>
+  <div class="card-body">
+    <div class="row">
+        <div class="col">
+            <label for="port" class="form-label">App Port</label>
+            <input class="form-control" id="port" name="port" placeholder="App Port ie: 3000 " type="text" df-port>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="uri" class="form-label">Database Name</label>
+            <input class="form-control" id="uri" name="uri" type="text" placeholder="Database" df-mongoUri>
+        </div>
+    </div>
+  </div>
+</div>
+`.trim().split('\n').join('').split('\t').join('');
+editor.addNode('app', 0, 0, x, y, 'app', data, app);
+}
+
 function addExpress(x,y) {
     let data = { "route": "/", "method": "get" };
     let express = `
@@ -136,31 +165,6 @@ function addExpress(x,y) {
 </div>
 `.trim().split('\n').join('').split('\t').join('');
 editor.addNode('express', 0, 1, x, y, 'express', data, express);
-}
-
-function addApp(x,y){
-    const data = { "port": 3000, "mongoUri": "mongodb://localhost:27017/x11"};
-    const app = `<div class="card m-0" style="width: 18rem;">
-  <div class="card-header">
-    @App Configuration
-  </div>
-  <div class="card-body">
-    <div class="row">
-        <div class="col">
-            <label for="port" class="form-label">App Port</label>
-            <input class="form-control" id="port" name="port" placeholder="App Port ie: 3000 " type="text" df-port>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <label for="uri" class="form-label">Database Name</label>
-            <input class="form-control" id="uri" name="uri" type="text" placeholder="Database" df-mongoUri>
-        </div>
-    </div>
-  </div>
-</div>
-`.trim().split('\n').join('').split('\t').join('');
-editor.addNode('app', 0, 0, x, y, 'app', data, app);
 }
 
 function addController(x,y){
@@ -266,6 +270,7 @@ function addMiddleware(x,y){
     editor.addNode('middleware', 1, 0, x, y, 'middleware', data, middleware);
 }
 
+//  MISC
 function edit(data){
     console.log(data);
 }
@@ -277,12 +282,13 @@ function _clear(){
     _export();
 }
 
-async function _import(){
+//  IMPORT AND EXPORT
+function _import(){
     const resp = confirm("Please Confirm!");
     if(!resp) return;
     const myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
-    await fetch('/model', {
+    fetch('/model', {
         method: 'GET',
         headers: myHeaders,
     }).then(resp=> resp.json()).then(model=>{
@@ -319,6 +325,7 @@ function _export(){
     });
 }
 
+//  MODULES
 function addModule(_name){
     const el = document.getElementById('module-name');
     const name = el.value;

@@ -1,5 +1,7 @@
 # X11-Express
 
+![Demo](https://github.com/jerosoler/Drawflow/raw/master/public/demo.png)
+
 Simple flow framework.
 
 X11-Express uses Drawflow to allows you to create a backend application easily and quickly.
