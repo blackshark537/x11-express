@@ -1,6 +1,9 @@
+'use strict';
+//  REQUIRE MODULES
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+//  SCHEMA DEFINITION
 const dataSchema = new Schema({
     _collection: String,
     data: {},

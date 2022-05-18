@@ -1,7 +1,17 @@
+'use strict';
+//  REQUIRE MODULES
 const model = require('../model/model');
 const fs = require('fs');
+
+//  LOAD SCHEMA
 const schema = JSON.parse(fs.readFileSync('schema.json'));
 
+//  CONTROLLER FUNCTIONS
+/**
+ * 
+ * @param {Express.Request} req 
+ * @param {Express.Response} res 
+ */
 const findAll = async (req, res)=>{
     try {
         const _module = schema[req.query['module']].data;
@@ -26,6 +36,11 @@ const findAll = async (req, res)=>{
     }
 }
 
+/**
+ * 
+ * @param {Express.Request} req 
+ * @param {Express.Response} res 
+ */
 const findOne = async(req, res)=>{
     try {
         const q = req.query['filters'];
@@ -39,6 +54,11 @@ const findOne = async(req, res)=>{
     }
 }
 
+/**
+ * 
+ * @param {Express.Request} req 
+ * @param {Express.Response} res 
+ */
 const create = async (req, res)=>{
     try {
         const _module = schema[req.query['module']].data;
@@ -64,6 +84,11 @@ const create = async (req, res)=>{
     }
 }
 
+/**
+ * 
+ * @param {Express.Request} req 
+ * @param {Express.Response} res 
+ */
 const update = async(req, res)=>{
     try {
         req.body.updatedAt = new Date();
@@ -74,6 +99,11 @@ const update = async(req, res)=>{
     }
 }
 
+/**
+ * 
+ * @param {Express.Request} req 
+ * @param {Express.Response} res 
+ */
 const del = async (req, res)=>{
     try {
         const result = await model.findOneAndDelete({_id: req.params.id});
@@ -83,6 +113,13 @@ const del = async (req, res)=>{
     }
 }
 
+/**
+ * 
+ * @private
+ * @param {DrawFlow.Node} node 
+ * @param {any} body Data
+ * @returns {Date} 
+ */
 const format = (node, body)=>{
     switch (node['type']) {
         case 'date':
@@ -92,6 +129,11 @@ const format = (node, body)=>{
     }
 }
 
+/**
+ * @private
+ * @param {Express.Response} res 
+ * @param {Error} error 
+ */
 const showError = (res, error)=>{
     res.status(500);
     res.json({
@@ -100,6 +142,7 @@ const showError = (res, error)=>{
         status: 500,
     });
 }
+
 module.exports = {
     findAll,
     findOne,
