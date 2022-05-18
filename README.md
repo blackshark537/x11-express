@@ -64,7 +64,7 @@ Parameter | Type | Description
 `data` | Object | your data
 `createdAt` | Date | created date 
 
-IE.
+IE:
 ```javascript
     {
         "_id": "6284540185fc85b40e9e7798",
@@ -80,12 +80,21 @@ IE.
 ### Request query filters
 ```javascript
     //  STRING QUERY
-    //Get by some String value
-   filters[data.param][$regex]=value
-   filters[data.param][$eq]=value
+    //IE: Get by some String value
+    filters[data.param][$regex]=value
+    filters[data.param][$eq]=value
     
+    //  AND CHAIN QUERY
+    //IE: Get by some String value by start and end
+    filters[$and][0][data.param][$regex]=start&
+    filters[$and][1][data.param][$regex]=end
+
+    //  OR CHAIN QUERY
+    filters[$or][0][data.param1][$regex]=value&
+    filters[$or][1][data.param2][$regex]=value
+
     //  CONDITIONAL
-    //Get by some Number value
+    //IE: Get by some Number value
     filter=data.param&cond=$gt&numValue=value
 
 ```
