@@ -10,7 +10,7 @@ X11-Express uses Drawflow.js to allow you create a backend application easily an
 - Drag Nodes
 - Config your Server Port
 - Create Modules
-- Set Rotes
+- Set Routes
 - Set Methods
 - Set Controllers
 - Middleware Editor
@@ -63,6 +63,7 @@ Parameter | Type | Description
 `_collection` | string | collection name
 `data` | Object | your data
 `createdAt` | Date | created date 
+`updatedAt` | Date | created date 
 
 IE:
 ```javascript
