@@ -271,10 +271,6 @@ function addMiddleware(x,y){
 }
 
 //  MISC
-function edit(data){
-    console.log(data);
-}
-
 function _clear(){
     const resp = confirm("Please Confirm!");
     if(!resp) return;
