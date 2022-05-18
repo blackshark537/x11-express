@@ -139,7 +139,7 @@ app.get('/x11', (req, res)=>{
     res.end();
 });
 
-//  MONGO INIT
+//  MONGOOSE INIT
 try {
     mongoose.connect(`mongodb://localhost:27017/${Database}`, (error)=>{
         if(error){
