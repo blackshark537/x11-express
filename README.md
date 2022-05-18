@@ -75,6 +75,7 @@ IE:
             "category": "phones"
         },
         "createdAt": "2022-05-18T02:03:45.468Z",
+        "updatedAt": "2022-05-18T02:03:45.468Z",
     }
 ```
 ### Request query filters

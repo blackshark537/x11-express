@@ -98,7 +98,7 @@ try {
         
                 if(_ctrl){
                     try {
-                        console.log(method, route);
+                        console.log("Route: " + method, route);
                         const _schema = _ctrl.outputs['output_1']['connections'].map(el=> el.node);
                         app[method](route, (req, res)=>{
                             try {

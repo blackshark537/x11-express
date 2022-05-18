@@ -66,6 +66,7 @@ const create = async (req, res)=>{
 
 const update = async(req, res)=>{
     try {
+        req.body.updatedAt = new Date();
         const result = await model.findOneAndUpdate({_id: req.params.id}, req.body);
         res.json({result});
     } catch (error) {
