@@ -80,12 +80,12 @@ IE:
 ### Request query filters
 ```javascript
     //  STRING QUERY
-    //IE: Get by some String value
+    //IE: Get some String value
     filters[data.param][$regex]=value
     filters[data.param][$eq]=value
     
     //  AND CHAIN QUERY
-    //IE: Get by some String value by start and end
+    //IE: Get some String value by start and end
     filters[$and][0][data.param][$regex]=start&
     filters[$and][1][data.param][$regex]=end
 
@@ -94,9 +94,12 @@ IE:
     filters[$or][1][data.param2][$regex]=value
 
     //  CONDITIONAL
-    //IE: Get by some Number value
+    //IE: Get some Number value with conditional $gt $lt or $eq
     filter=data.param&cond=$gt&numValue=value
-
+    filter=data.param&cond=$lt&numValue=value
+    filter=data.param&cond=$gte&numValue=value
+    filter=data.param&cond=$lte&numValue=value
+    filter=data.param&cond=$eq&numValue=value
 ```
 
 ## License
