@@ -1,16 +1,16 @@
 'use strict';
 
-//  NODE MODULES
+//  REQUIRE MODULES
 const fs = require('fs');
 const express = require('express');
 const mongoose = require('mongoose');
 const vm = require('vm');
 const cors = require('cors')
-
-//  REQUIRES
-const app = express();
 const bodyParser = require('body-parser');
 const controller = require('./src/controller/controller');
+
+//  EXPRESS INSTANCE
+const app = express();
 
 //  BODY-PARSE
 app.use(bodyParser.urlencoded({ extended: false }))
