@@ -42,13 +42,14 @@ npm start
 ### Middleware
 Middleware Definition
 ```javascript
+    // Midleware uses v8 virtual machine to extend functionality.
     function middleware(req,res,next){
         next();
     }
     middleware(req, res, next);
 ```
 
-Middleware context parameters.
+Middleware v8 virtual machine context parameters.
 
 Parameter | Type | Description
 --- | --- | ---
@@ -85,22 +86,22 @@ IE:
 ```
 ### Request query filters
 ```javascript
-    //  STRING QUERY
-    //IE: Get some String value
+    //  FILTER QUERY
+    //IE: Get some Object by String param value
     filters[data.param][$regex]=value
     filters[data.param][$eq]=value
     
-    //  AND CHAIN QUERY
-    //IE: Get some String value by start and end
+    //  AND QUERY CHAIN
+    //IE: Get some Object by conditional start - end String param value
     filters[$and][0][data.param][$regex]=start&
     filters[$and][1][data.param][$regex]=end
 
-    //  OR CHAIN QUERY
+    //  OR QUERY CHAIN
     filters[$or][0][data.param1][$regex]=value&
     filters[$or][1][data.param2][$regex]=value
 
     //  CONDITIONAL
-    //IE: Get some Number value with conditional $gt $lt or $eq
+    //IE: Get some Object with conditional ($gt, $lt or $eq) Number param value.
     filter=data.param&cond=$gt&numValue=value
     filter=data.param&cond=$lt&numValue=value
     filter=data.param&cond=$gte&numValue=value

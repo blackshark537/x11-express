@@ -9,7 +9,6 @@ editor.start();
 //  LOAD MODULES
 let modules = ['Home'];
 presentModules();
-
 //  EDITOR MODE BUTTONS
 const lock = document.getElementById('lock');
 const unlock = document.getElementById('unlock');
@@ -81,32 +80,20 @@ function drop(ev) {
 function addNodeToDrawFlow(name, pos_x, pos_y) {
     if(editor.editor_mode === 'fixed') {
         return false;
-      }
-      pos_x = pos_x * ( editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * ( editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
-      pos_y = pos_y * ( editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * ( editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
+    }
+    pos_x = pos_x * ( editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * ( editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
+    pos_y = pos_y * ( editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * ( editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
 
-      switch (name) {
-        case 'express':
-            addExpress(pos_x,pos_y);
-            break;
-        case 'controller':
-            addController(pos_x, pos_y);
-        break;
-        case 'middleware':
-            addMiddleware(pos_x, pos_y);
-        break;
-        case 'schema':
-            addScheme(pos_x, pos_y);
-        break;
-        case 'prop':
-            addProp(pos_x, pos_y);
-        break;
-        case 'app':
-            addApp(pos_x, pos_y);
-        break;
-        default:
-            break;
-      }
+    const nodeTypes = {
+        "app": (x,y)=> addApp(x,y),
+        "express": (x,y)=> addExpress(x,y),
+        "controller":(x,y)=> addController(x,y),
+        "middleware": (x,y)=> addMiddleware(x,y),
+        "schema": (x,y)=> addScheme(x,y),
+        "prop": (x,y)=> addProp(x,y),
+    }
+    
+    nodeTypes[name](pos_x, pos_y);
 }
 
 

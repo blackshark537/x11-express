@@ -12,6 +12,10 @@ const controller = require('./src/controller/controller');
 //  EXPRESS INSTANCE
 const app = express();
 
+// DEFAULT VARIABLES
+let port = 3000;
+let Database = 'x11';
+
 //  BODY-PARSE
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
@@ -34,31 +38,27 @@ const options = {
 
 app.use(express.static('public', options))
 
-// DEFAULT VARIABLES
-let port = 3000;
-let Database = 'x11';
-
 //  X11 FACTORY
 try {
     const file = fs.readFileSync('schema.json');
 
     const dfSchema = JSON.parse(file);
-    const modules = Object.keys(dfSchema);
+    const _modules = Object.keys(dfSchema);
     const _app = Object.values(dfSchema['Home']['data']).find(el=> el.name === 'app');
 
     port = _app['data']['port'];
     Database = _app['data']['database'];
 
-    modules.forEach(m=>{
-        const nodes = Object.values(dfSchema[m].data);
-        nodes.forEach(n=>{
-            if(n.name === 'express'){
-                const route = '/'+ m + n.data.route;
-                const method = n.data.method;
+    _modules.forEach(module=>{
+        const nodes = Object.values(dfSchema[module].data);
+        nodes.forEach(node=>{
+            if(node.name === 'express'){
+                const route = '/'+ module + node.data.route;
+                const method = node.data.method;
 
-                const _nodes = n.outputs['output_1']['connections'].map(el=> el.node);
-                const _ctrl = _nodes.map(node=> dfSchema[m]['data'][node]).find(node=> node.class === 'controller');
-                const _middleware = _nodes.map(node=> dfSchema[m]['data'][node]).find(node=> node.class === 'middleware');
+                const _nodes = node.outputs['output_1']['connections'].map(el=> el.node);
+                const _ctrl = _nodes.map(node=> dfSchema[module]['data'][node]).find(node=> node.class === 'controller');
+                const _middleware = _nodes.map(node=> dfSchema[module]['data'][node]).find(node=> node.class === 'middleware');
         
                 if(_middleware){
                     try {
@@ -85,8 +85,7 @@ try {
                             if(!file) return;
 
                             file.data.map(data=>{
-                                fs.appendFileSync(file.name, JSON.stringify(data))
-                                console.log(file.name, data);
+                                fs.appendFileSync(file.name, JSON.stringify(data));
                             });
 
                         });
@@ -102,7 +101,7 @@ try {
                         app[method](route, (req, res, next)=>{
                             try {
                                 req.query['schema'] = _schema[0];
-                                req.query['module'] = m;
+                                req.query['module'] = module;
                                 controller[_ctrl.data.ctrl](req, res, next);
                             } catch (error) {
                                 console.error(error);
