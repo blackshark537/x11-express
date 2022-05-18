@@ -43,7 +43,6 @@ try {
     const file = fs.readFileSync('schema.json');
 
     const dfSchema = JSON.parse(file);
-    
     const modules = Object.keys(dfSchema);
     const _app = Object.values(dfSchema['Home']['data']).find(el=> el.name === 'app');
 
@@ -100,11 +99,11 @@ try {
                     try {
                         console.log("Route: " + method, route);
                         const _schema = _ctrl.outputs['output_1']['connections'].map(el=> el.node);
-                        app[method](route, (req, res)=>{
+                        app[method](route, (req, res, next)=>{
                             try {
                                 req.query['schema'] = _schema[0];
                                 req.query['module'] = m;
-                                controller[_ctrl.data.ctrl](req, res);
+                                controller[_ctrl.data.ctrl](req, res, next);
                             } catch (error) {
                                 console.error(error);
                             }

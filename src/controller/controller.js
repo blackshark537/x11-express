@@ -12,7 +12,7 @@ const schema = JSON.parse(fs.readFileSync('schema.json'));
  * @param {Express.Request} req 
  * @param {Express.Response} res 
  */
-const findAll = async (req, res)=>{
+const findAll = async (req, res, next)=>{
     try {
         const _module = schema[req.query['module']].data;
         const _schema = _module[req.query['schema']];
@@ -41,7 +41,7 @@ const findAll = async (req, res)=>{
  * @param {Express.Request} req 
  * @param {Express.Response} res 
  */
-const findOne = async(req, res)=>{
+const findOne = async(req, res, next)=>{
     try {
         const q = req.query['filters'];
         const resp = await model.findOne({_id: req.params.id})
@@ -59,17 +59,21 @@ const findOne = async(req, res)=>{
  * @param {Express.Request} req 
  * @param {Express.Response} res 
  */
-const create = async (req, res)=>{
+const create = async (req, res, next)=>{
     try {
         const _module = schema[req.query['module']].data;
         const _schema = _module[req.query['schema']];
         const body = req.body;
         const prop_nodes = _schema['outputs']['output_1'].connections.map(el=> el.node);
         const _collectionName = _schema['data']['schema'];
-        data = {};
+        const data = {};
+
         prop_nodes.forEach(node=>{
             const prop = _module[node];
             const data_node = prop.data;
+            if(typeof(body[data_node['name']]) != data_node['type']){
+                throw Error(data_node['name'] + " value type is not "+ data_node['type']);
+           }
             data[data_node['name']] = format(data_node, body);
         });
 
@@ -78,7 +82,8 @@ const create = async (req, res)=>{
             data: data
         });
         const result = await newModel.save();
-        res.json({result});
+        res.json(result);
+
     } catch (error) {
         showError(res, error);
     }
@@ -89,7 +94,7 @@ const create = async (req, res)=>{
  * @param {Express.Request} req 
  * @param {Express.Response} res 
  */
-const update = async(req, res)=>{
+const update = async(req, res, next)=>{
     try {
         req.body.updatedAt = new Date();
         const result = await model.findOneAndUpdate({_id: req.params.id}, req.body);
@@ -104,13 +109,32 @@ const update = async(req, res)=>{
  * @param {Express.Request} req 
  * @param {Express.Response} res 
  */
-const del = async (req, res)=>{
+const del = async (req, res, next)=>{
     try {
         const result = await model.findOneAndDelete({_id: req.params.id});
         res.json({result});
     } catch (error) {
         showError(res, error);
     }
+}
+
+/**
+ * 
+ * @param {Express.Request} req 
+ * @param {Express.Response} res 
+ * @param {Express.next} next 
+ */
+const dropCollection = async (req,res,next)=>{
+    try {
+        const _module = schema[req.query['module']].data;
+        const _schema = _module[req.query['schema']];
+        const _collectionName = _schema['data']['schema'];
+        const result = await model.deleteMany({_collection: _collectionName});
+        res.json(result);
+    } catch (error) {
+        showError(res, error);
+    }
+
 }
 
 /**
@@ -148,5 +172,6 @@ module.exports = {
     findOne,
     create,
     update,
-    del
+    del,
+    dropCollection
 }

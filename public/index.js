@@ -184,6 +184,7 @@ function addController(x,y){
                 <option value="create">Create</option>
                 <option value="update">Update</option>
                 <option value="del">Delete</option>
+                <option value="dropCollection">Drop Collection</option>
                 </select>
             </div>
         </div>
@@ -214,6 +215,7 @@ editor.addNode('schema', 1, 1, x, y, 'schema', data, schema);
 }
 
 function addProp(x,y){
+    let prop_data = {"type": "string", "name": ""};
     let prop = `
 <div class="card m-0" style="width: 18rem;">
   <div class="card-header">
@@ -230,17 +232,18 @@ function addProp(x,y){
         <div class="col">
             <label for="Type" class="form-label">Prop type:</label>
             <select class="form-select form-select-sm" aria-label="Type" df-type>
-            <option selected value="string">String</option>
-            <option value="number">Number</option>
-            <option value="array">Array</option>
-            <option value="date">Date</option>
+                <option selected value="string">String</option>
+                <option value="number">Number</option>
+                <option value="boolean">Boolean</option>
+                <option value="array">Array</option>
+                <option value="object">Object</option>
+                <option value="date">Date</option>
             </select>
         </div>
     </div>
   </div>
 </div>
     `.trim().split('\n').join('').split('\t').join('');
-    let prop_data = {"type": "string", "name": ""};
     editor.addNode('prop', 1, 0, x, y, 'prop', prop_data, prop);
 }
 
