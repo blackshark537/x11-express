@@ -1,7 +1,7 @@
 {
   "name": "x11-Express",
   "version": "Beta 0.1.0",
-  "description": "Data Flow For Backend Creation",
+  "description": "Simple flow dynamic backend framework.",
   "main": "app.js",
   "scripts": {
     "develop": "nodemon app.js",

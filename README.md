@@ -2,9 +2,9 @@
 
 ![Demo](https://github.com/blackshark537/x11-express/raw/master/public/demo.png)
 
-Simple flow framework.
+Simple flow dynamic backend framework.
 
-X11-Express uses Drawflow to allows you to create a backend application easily and quickly.
+X11-Express uses Drawflow.js to allows you to create a backend application easily and quickly.
 
 ## Features
 - Drag Nodes
@@ -59,7 +59,7 @@ Parameter | Type | Description
 Parameter | Type | Description
 --- | --- | ---
 `_id` | string | mongoose.types.objectid
-`collection` | string | table name
+`_collection` | string | table name
 `data` | Object | your data
 `createdAt` | Date | created date 
 
