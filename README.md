@@ -59,7 +59,7 @@ Parameter | Type | Description
 Parameter | Type | Description
 --- | --- | ---
 `_id` | string | mongoose.types.objectid
-`table` | string | table name
+`collection` | string | table name
 `data` | Object | your data
 `createdAt` | Date | created date 
 
@@ -67,7 +67,7 @@ IE.
 ```javascript
     {
         "_id": "6284540185fc85b40e9e7798",
-        "table": "products",
+        "_collection": "products",
         "data": {
             "name": "oneplus 6t 120GB 8GB Android",
             "price": 150,

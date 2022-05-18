@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const dataSchema = new Schema({
-    table: String,
+    _collection: String,
     data: {},
     createdAt: {type: Date, default: Date.now}
 });

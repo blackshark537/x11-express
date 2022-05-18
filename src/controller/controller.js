@@ -1,10 +1,10 @@
 const model = require('../model/model');
 const fs = require('fs');
-const config = JSON.parse(fs.readFileSync('schema.json'));
+const schema = JSON.parse(fs.readFileSync('schema.json'));
 
 const findAll = async (req, res)=>{
     try {
-        const _module = config[req.query['module']].data;
+        const _module = schema[req.query['module']].data;
         const _schema = _module[req.query['schema']];
 
         const q = req.query;
@@ -16,7 +16,7 @@ const findAll = async (req, res)=>{
             q['filter'][key]={}
             q['filter'][key][cond] = value;
         }
-        const resp = await model.find({table: _schema.data.schema})
+        const resp = await model.find({_collection: _schema.data.schema})
         .where(q? {...q['filters'], ...q['filter']} : {});
         res.json([
             ...resp
@@ -41,11 +41,11 @@ const findOne = async(req, res)=>{
 
 const create = async (req, res)=>{
     try {
-        const _module = config[req.query['module']].data;
+        const _module = schema[req.query['module']].data;
         const _schema = _module[req.query['schema']];
         const body = req.body;
         const prop_nodes = _schema['outputs']['output_1'].connections.map(el=> el.node);
-        const table_name = _schema['data']['schema'];
+        const _collectionName = _schema['data']['schema'];
         data = {};
         prop_nodes.forEach(node=>{
             const prop = _module[node];
@@ -54,7 +54,7 @@ const create = async (req, res)=>{
         });
 
         const newModel = new model({
-            table: table_name,
+            _collection: _collectionName,
             data: data
         });
         const result = await newModel.save();
