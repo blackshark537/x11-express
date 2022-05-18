@@ -32,8 +32,8 @@ npm i --save
 npm start
 ```
 
-### Define Middleware
-Start drawflow.
+### Middleware
+Middleware Definition
 ```javascript
     function middleware(req,res,next){
         next();
