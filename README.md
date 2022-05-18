@@ -20,7 +20,7 @@ X11-Express uses Drawflow to allows you to create a backend application easily a
 Download or clone repository.
 
 #### Clone
-`git clone https://github.com/jerosoler/Drawflow.git`
+`git clone https://github.com/blackshark537/x11-express.git`
 
 #### NPM
 ```javascript
@@ -29,7 +29,7 @@ npm i --save
 
 ### Running
 ```javascript
-npm run develop
+npm start
 ```
 
 ### Define Middleware
