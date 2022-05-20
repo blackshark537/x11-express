@@ -21,9 +21,11 @@ function changeMode(option) {
     unlock.style.display = option === 'edit'? 'none' : 'block';
 }
 
-//  TEXTAREA CODE
-let _code = document.getElementById('code');
-_code.value = `\tfunction middleware(req,res,next){\t\tnext();\n\t}\tmiddleware(req, res, next);`;
+//  CODEMONACO
+/* let _code = document.getElementById('code');
+_code.value = `\tfunction middleware(req,res,next){\t\tnext();\n\t}\tmiddleware(req, res, next);`; */
+const vscode = document.getElementById("vscode");
+
 
 //  CODE MIRROR
 const cm = CodeMirror.fromTextArea(_code, {
@@ -48,6 +50,63 @@ var mobile_last_move = null;
 function positionMobile(ev) {
     mobile_last_move = ev;
 }
+
+//  EVENTS
+editor.on('nodeCreated', function (id) {
+    console.log("Node created " + id);
+})
+
+editor.on('nodeRemoved', function (id) {
+    console.log("Node removed " + id);
+})
+
+editor.on('nodeSelected', function (id) {
+    console.log("Node selected " + id);
+})
+
+editor.on('moduleCreated', function (name) {
+    console.log("Module Created " + name);
+})
+
+editor.on('moduleChanged', function (name) {
+    console.log("Module Changed " + name);
+})
+
+editor.on('connectionCreated', function (connection) {
+    console.log('Connection created');
+    console.log(connection);
+})
+
+editor.on('connectionRemoved', function (connection) {
+    console.log('Connection removed');
+    console.log(connection);
+})
+
+editor.on('mouseMove', function (position) {
+    console.log('Position mouse x:' + position.x + ' y:' + position.y);
+})
+
+editor.on('nodeMoved', function (id) {
+    console.log("Node moved " + id);
+})
+
+editor.on('zoom', function (zoom) {
+    console.log('Zoom level ' + zoom);
+})
+
+editor.on('translate', function (position) {
+    console.log('Translate x:' + position.x + ' y:' + position.y);
+})
+
+editor.on('addReroute', function (id) {
+    console.log("Reroute added " + id);
+})
+
+editor.on('removeReroute', function (id) {
+    console.log("Reroute removed " + id);
+})
+
+
 
 //  DRAG AND DROP
 function allowDrop(ev) {
@@ -95,7 +154,6 @@ function addNodeToDrawFlow(name, pos_x, pos_y) {
     
     nodeTypes[name](pos_x, pos_y);
 }
-
 
 //  NODES TYPES DEFINITION
 function addApp(x,y){
@@ -236,9 +294,7 @@ function addProp(x,y){
 
 function addMiddleware(x,y){
     let data = { "code": "", "name": "" };
-    const doc = cm.getDoc();
-    const cd = doc["children"][0]['lines'].map(line=> line.text).join("");
-    data["code"] = cd;
+    data["code"] = vscode.value;
 
     let middleware = `
     <div class="card m-0" style="width: 18rem;">

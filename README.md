@@ -2,7 +2,7 @@
 
 ![Demo](https://github.com/blackshark537/x11-express/raw/master/public/demo.png)
 
-Simple flow dynamic backend framework.
+Simple flow dynamic nodejs framework.
 
 X11-Express uses Drawflow.js to allow you create a backend application easily and quickly.
 
@@ -29,18 +29,28 @@ Download or clone repository.
 ```javascript
 npm i --save
 ```
-### Develop
+
+#### PM2
 ```javascript
-npm run develop
+[sudo] npm i pm2 -g
+```
+### Build
+```javascript
+npm run build
 ```
 
 ### Running
 ```javascript
-npm start
+pm2 start ./dist/main.js
+```
+
+### Develop
+```javascript
+npm start:dev
 ```
 
 ### Middleware
-Middleware Definition
+Middleware Function
 ```javascript
     // Midleware uses v8 virtual machine to extend functionality.
     function middleware(req,res,next){
@@ -111,4 +121,4 @@ IE:
 
 ## License
 
-[MIT](LICENSE)
+Licensed under the [MIT](LICENSE) License.
