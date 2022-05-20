@@ -71,7 +71,7 @@ Parameter | Type | Description
 `file.name` | string | Name of the file
 `file.data` | Array | Data to save in file
 
-### Mongo Data Model
+### MongoDB Data Model
 Parameter | Type | Description
 --- | --- | ---
 `_id` | string | mongoose.types.objectid
