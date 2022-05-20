@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { Model } from '../schemas/x11.model';
+import { Models, Node } from '../models';
 import * as fs from 'fs';
-import { Node } from '../main';
 
 export class x11Controller{
     
@@ -43,7 +42,7 @@ export class x11Controller{
                 const _value = numValue? parseInt(numValue) : value;
                 query.param[cond] = _value
             }
-            const resp = await Model.find({_collection: collection.data.schema})
+            const resp = await Models.db.find({_collection: collection.data.schema})
             .where(query? {...query.filters, ...query.param} : {});
             res.json([
                ...resp
@@ -56,7 +55,7 @@ export class x11Controller{
     findOne = async(req: Request, res: Response, next: NextFunction)=>{
         try {
             const query: any = req.query['filters'];
-            const resp = await Model.findOne({_id: req.params.id})
+            const resp = await Models.db.findOne({_id: req.params.id})
             .where(query? {...query} : {});
             res.json(
                 ...resp
@@ -95,7 +94,7 @@ export class x11Controller{
                 data[data_node['name']] = this.format(data_node, body);
             });
             
-            const newModel = new Model({
+            const newModel = new Models.db({
                 _collection: _collectionName,
                 data: data
             });
@@ -110,7 +109,7 @@ export class x11Controller{
     update = async(req: Request, res: Response, next: NextFunction)=>{
         try {
             req.body.updatedAt = new Date();
-            const result = await Model.findOneAndUpdate({_id: req.params.id}, req.body);
+            const result = await Models.db.findOneAndUpdate({_id: req.params.id}, req.body);
             res.json({result});
         } catch (error) {
             this.showError(res, error);
@@ -119,7 +118,7 @@ export class x11Controller{
 
     del = async(req: Request, res: Response, next: NextFunction)=>{
         try {
-            const result = await Model.findOneAndDelete({_id: req.params.id});
+            const result = await Models.db.findOneAndDelete({_id: req.params.id});
             res.json({result});
         } catch (error) {
             this.showError(res, error);
@@ -141,7 +140,7 @@ export class x11Controller{
             const _module = this.schema[query['module']].data;
             const _schema = _module[query['schema']];
             const _collectionName = _schema['data']['schema'];
-            const result = await Model.deleteMany({_collection: _collectionName});
+            const result = await Models.db.deleteMany({_collection: _collectionName});
             res.json(result);
         } catch (error) {
             this.showError(res, error);
