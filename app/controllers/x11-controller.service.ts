@@ -1,17 +1,18 @@
 import { NextFunction, Request, Response } from 'express';
-import { Models, Node } from '../models';
+import { Cripto } from '../services'
+import { iQuery, KeyNode, KeyValue, Models, Node, PropTypes } from '../models';
 import * as fs from 'fs';
 
 export class x11Controller{
     
-    private schema: any;
+    private appConfig: KeyValue;
     static _instance: x11Controller;
 
-    constructor(){
-        //  LOAD SCHEMA
+    private constructor(){
+        //  LOAD APP CONFIG
         try {
             const file = fs.readFileSync('./app/app-config.json', { encoding: 'utf-8'});
-            this.schema = JSON.parse(file);
+            this.appConfig = JSON.parse(file);
         } catch (error) {
             throw new Error(error as string);
         }
@@ -24,78 +25,73 @@ export class x11Controller{
     
     async findAll(req: Request, res: Response, next: NextFunction){
         try {
-            const query = req.query as { 
-                module: string;
-                schema: string;
-                collection: string;
-                param?: {[name: string]: any};
-                cond: string;
-                numValue?: string;
-                value?: string;
-                filters?: any;
-            };
-            const module = this.schema[query['module']].data;
-            const collection = module[query['collection']];
-    
+            const query: iQuery | any = req.query;
+            const module: KeyNode = this.appConfig[query['module']].data;
+            const collectionNode: Node = module[query['collection']];
+            const collection: string = collectionNode.data.schema;
+
+            const _Models: KeyValue = Models;
+
             if(query.param){
                 const { numValue, cond, value } = query;
                 const _value = numValue? parseInt(numValue) : value;
                 query.param[cond] = _value
             }
-            const resp = await Models.db.find({_collection: collection.data.schema})
+
+            const resp = await _Models[collection].find()
             .where(query? {...query.filters, ...query.param} : {});
             res.json([
                ...resp
             ]);
+
         } catch (error) {
             this.showError(res, error);
         }
     }
 
-    findOne = async(req: Request, res: Response, next: NextFunction)=>{
+    async findOne(req: Request, res: Response, next: NextFunction){
         try {
-            const query: any = req.query['filters'];
-            const resp = await Models.db.findOne({_id: req.params.id})
+            const query: iQuery | any = req.query;
+            const module: KeyNode = this.appConfig[query['module']].data;
+            const collectionNode: Node = module[query['collection']];
+            const collection: string = collectionNode.data.schema;
+
+            const _Models: KeyValue = Models;
+            
+            const resp = await _Models[collection].findOne({_id: req.params.id})
             .where(query? {...query} : {});
             res.json(
-                ...resp
+                resp
             );
+
         } catch (error) {
             this.showError(res, error);
         }
     }
 
-    create = async(req: Request, res: Response, next: NextFunction)=>{
+    async create(req: Request, res: Response, next: NextFunction){
         try {
 
-            const query = req.query as { 
-                module: string; 
-                schema: string;
-                collection: string;
-                param?: {[name: string]: any};
-                cond: string;
-                numValue?: string;
-                value?: string;
-                filters?: any;
-            };
-            const _module = this.schema[query['module']].data;
-            const _schema: Node = _module[query['schema']];
-            const body = req.body;
-            const prop_nodes: string[] = _schema['outputs']['output_1'].connections.map(el=> el.node);
-            const _collectionName = _schema['data']['schema'];
-            const data: any = {};
-    
+            const query: iQuery | any = req.query;
+            const module: KeyNode = this.appConfig[query['module']].data;
+            const collectionNode: Node = module[query['collection']];
+            const collection: string = collectionNode.data.schema;
+
+            const _Models: KeyValue = Models;
+            
+            const body: KeyValue = req.body;
+            const data: KeyValue = {};
+
+            const prop_nodes: string[] = collectionNode.outputs['output_1'].connections.map(el=> el.node);
+            
             prop_nodes.forEach(node=>{
-                const prop = _module[node];
-                const data_node = prop.data;
-                if(typeof(body[data_node['name']]) != data_node['type']){
-                    throw Error(data_node['name'] + " value type is not "+ data_node['type']);
-               }
+                const propNode: Node = module[node];
+                const data_node: KeyValue = propNode.data;
+                this.checkType(data_node, body);
                 data[data_node['name']] = this.format(data_node, body);
             });
             
-            const newModel = new Models.db({
-                _collection: _collectionName,
+            const newModel = new _Models[collection]({
                 data: data
             });
             const result = await newModel.save();
@@ -106,41 +102,49 @@ export class x11Controller{
         }
     }
 
-    update = async(req: Request, res: Response, next: NextFunction)=>{
+    async update(req: Request, res: Response, next: NextFunction) {
         try {
+            const query: iQuery | any = req.query;
+            const module: KeyNode = this.appConfig[query['module']].data;
+            const collectionNode: Node = module[query['collection']];
+            const collection = collectionNode.data.schema;
+
+            const _Models: KeyValue = Models;
+
             req.body.updatedAt = new Date();
-            const result = await Models.db.findOneAndUpdate({_id: req.params.id}, req.body);
+            const result = await _Models[collection].findOneAndUpdate({_id: req.params.id}, req.body);
             res.json({result});
         } catch (error) {
             this.showError(res, error);
         }
     }
 
-    del = async(req: Request, res: Response, next: NextFunction)=>{
+    async delete(req: Request, res: Response, next: NextFunction){
         try {
-            const result = await Models.db.findOneAndDelete({_id: req.params.id});
+            const query: iQuery | any = req.query;
+            const module: KeyNode = this.appConfig[query['module']].data;
+            const collectionNode: Node = module[query['collection']];
+            const collection = collectionNode.data.schema;
+
+            const _Models: KeyValue = Models;
+
+            const result = await _Models[collection].findOneAndDelete({_id: req.params.id});
             res.json({result});
         } catch (error) {
             this.showError(res, error);
         }
     }
 
-    dropCollection = async(req: Request, res: Response, next: NextFunction)=>{
+    async dropCollection(req: Request, res: Response, next: NextFunction) {
         try {
-            const query = req.query as { 
-                module: string; 
-                schema: string;
-                collection: string;
-                param?: {[name: string]: any};
-                cond: string;
-                numValue?: string;
-                value?: string;
-                filters?: any;
-            };
-            const _module = this.schema[query['module']].data;
-            const _schema = _module[query['schema']];
-            const _collectionName = _schema['data']['schema'];
-            const result = await Models.db.deleteMany({_collection: _collectionName});
+            const query: iQuery | any = req.query;
+            const module: KeyNode = this.appConfig[query['module']].data;
+            const collectionNode: Node = module[query['collection']];
+            const collection = collectionNode.data.schema;
+
+            const _Models: KeyValue = Models;
+
+            const result = await _Models[collection].deleteMany({...query});
             res.json(result);
         } catch (error) {
             this.showError(res, error);
@@ -148,13 +152,23 @@ export class x11Controller{
     
     }
 
-    format = (node: {[name: string]: any}, body: any)=>{
-        if( node['type'] === 'date')
-            return new Date(body[node['name']]);        
+    private format = (node: KeyValue, body: KeyValue)=>{
+        if( node['type'] === PropTypes.DATE)
+            return new Date(body[node['name']]);
+        if( node['type'] === PropTypes.ENCRYPTED)
+            return Cripto.encript(body[node['name']]);
+
         return body[node['name']];
     }
 
-    showError = async(res: Response, error: any)=>{
+    private checkType(data_node: KeyValue, body: KeyValue){
+        if(typeof(body[data_node['name']]) != data_node['type']){
+            throw Error(data_node['name'] + " value type is not "+ data_node['type']);
+        }
+        return;
+    }
+
+    private async showError(res: Response, error: any){
         res.status(500);
         res.json({
             msg: 'Server Error',

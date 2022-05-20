@@ -228,8 +228,8 @@ function addController(x,y){
                 <option value="findOne">FindOne</option>
                 <option value="create">Create</option>
                 <option value="update">Update</option>
-                <option value="del">Delete</option>
-                <option value="dropCollection">Drop Collection</option>
+                <option value="delete">Delete</option>
+                <option value="dropCollection">Delete Many</option>
                 </select>
             </div>
         </div>
@@ -283,6 +283,7 @@ function addProp(x,y){
                 <option value="array">Array</option>
                 <option value="object">Object</option>
                 <option value="date">Date</option>
+                <option value="encrypted">Date</option>
             </select>
         </div>
     </div>

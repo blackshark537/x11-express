@@ -6,10 +6,9 @@ import express,{
     NextFunction
 } from 'express';
 
-import { 
-    x11Controller 
-} from '../controllers';
-import { Node } from '../models';
+import { x11Controller } from '../controllers';
+import { middlewares } from '../middlewares';
+import { KeyValue, Node } from '../models';
 
 export class CoreService{
     
@@ -38,39 +37,10 @@ export class CoreService{
                         if(middlewareNodes.length){
                             middlewareNodes.map(middlewareNode=>{
                                 try {
-                                    const middlewareCode = middlewareNode.data.code;
-        
+                                    const name = middlewareNode.data.name;
+                                    const _middlewares: KeyValue = middlewares
                                     this.app.use(route, function(req,res, next){
-                                        
-                                        //  VM CONTEXT
-                                        const context = vm.createContext({
-                                            req, res, next,
-                                            logs: [],
-                                            file: {
-                                                name: "",
-                                                data: []
-                                            },
-                                        });
-            
-                                        //  V8 VIRTUAL MACHINE
-                                        vm.runInContext(middlewareCode, context);
-                                        
-                                        const { logs, file } = context as {
-                                            logs: any[],
-                                            file: {
-                                                name: string;
-                                                data: any[];
-                                            }
-                                        };
-            
-                                        logs.map(log => console.log(log));
-                                        
-                                        if(!file) return;
-            
-                                        file.data.map(data=>{
-                                            fs.appendFileSync(file.name, JSON.stringify(data));
-                                        });
-            
+                                        _middlewares[name](req, res, next);
                                     });
                                 } catch (error) {
                                     console.error(error);
@@ -81,13 +51,12 @@ export class CoreService{
                         if(controllerNode){
                             try {
                                 const collections: string[] = controllerNode.outputs['output_1']['connections'].map(el=> el.node);
-        
-                                const _app: any = this.app;
+                                const _app: KeyValue = this.app;
                                 (_app[method])(route, (req: Request, res: Response, next: NextFunction)=>{
                                     try {
                                         req.query['collection'] = collections[0];
                                         req.query['module'] = module;
-                                        const controller: any = x11Controller.getInstance();
+                                        const controller: KeyValue = x11Controller.getInstance();
                                         controller[controllerNode.data.ctrl](req, res, next);
                                     } catch (error) {
                                         throw new Error(`${error}`);

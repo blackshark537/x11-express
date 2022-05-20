@@ -38,6 +38,8 @@ const loggerOptions: expressWinston.LoggerOptions = {
     ),
 };
 
+const debugLog: debug.IDebugger = debug('app');
+
 // when not debugging, log requests as one-liners
 if (!process.env.DEBUG) {
     loggerOptions.meta = false; 
@@ -45,6 +47,8 @@ if (!process.env.DEBUG) {
 
 // initialize the logger with the above configuration
 app.use(expressWinston.logger(loggerOptions));
+app.set("port", process.env.PORT || 4200);
+app.set("db", process.env.DB  || "x11-Express");
 
 // App PORT and DB configutation
 try {
@@ -79,6 +83,8 @@ connect(`mongodb://localhost:27017/${app.get("db")}`, (error)=>{
 
     const runningMessage = `Server running at http://localhost:${app.get("port")}`;
     
+    debugLog(`${runningMessage}`);
+
     server.listen(app.get("port"), () => {
         console.log(runningMessage);
     });

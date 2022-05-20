@@ -3,7 +3,7 @@ import { Cripto } from '../services/ncrypt.service';
 import fs from 'fs';
 
 export const middlewares = {
-    "hello": function(req: Request, res: Response, next: NextFunction){
+    "hello": (req: Request, res: Response, next: NextFunction)=>{
         console.log("hello");
         console.log("encripted", Cripto.encript("Hello"));
         next();

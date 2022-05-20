@@ -6,7 +6,8 @@ export interface x11Model{
 }
 
 //  INTERFACES
-export interface KeyValue{ [name: string]: any }
+export type KeyValue = { [name: string]: any }
+export type KeyNode = { [name: string]: Node };
 
 export interface Node{
     id: number;
@@ -15,17 +16,33 @@ export interface Node{
     html: string;
     data: KeyValue;
     outputs: {
-        [name: string]: {
-            connections: {
-                node: string
-            }[]
-        }
+        [name: string]: KeyConnection
     };
     inputs: {
-        [name: string]: {
-            connections: {
-                node: string
-            }[]
-        }
+        [name: string]: KeyConnection
     }
+}
+
+interface KeyConnection{
+    [name: string]: Connection[]
+}
+
+interface Connection{
+    node: string
+}
+
+export interface iQuery{
+    module: string;
+    schema: string;
+    collection: string;
+    param?: {[name: string]: any};
+    cond: string;
+    numValue?: string;
+    value?: string;
+    filters?: any;
+};
+
+export enum PropTypes{
+    DATE="date",
+    ENCRYPTED="encrypted",
 }
