@@ -35,9 +35,8 @@ export interface iQuery{
     module: string;
     schema: string;
     collection: string;
-    param?: {[name: string]: any};
+    filter?: {[name: string]: any};
     cond: string;
-    numValue?: string;
     value?: string;
     filters?: any;
 };
@@ -45,4 +44,12 @@ export interface iQuery{
 export enum PropTypes{
     DATE="date",
     ENCRYPTED="encrypted",
+}
+
+export enum HttpCode{
+    SUCCESS=200,
+    CONFLICT=409,
+    FORBIDDEN=403,
+    NOTFOUND=404,
+    SERVER_ERROR=500,
 }

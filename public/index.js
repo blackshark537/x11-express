@@ -6,6 +6,9 @@ editor.reroute = true;
 editor.zoom_min = 0.4;
 editor.start();
 
+// INIT
+listCollection();
+
 //  LOAD MODULES
 let modules = ['Home'];
 presentModules();
@@ -22,20 +25,7 @@ function changeMode(option) {
 }
 
 //  CODEMONACO
-/* let _code = document.getElementById('code');
-_code.value = `\tfunction middleware(req,res,next){\t\tnext();\n\t}\tmiddleware(req, res, next);`; */
 const vscode = document.getElementById("vscode");
-
-
-//  CODE MIRROR
-const cm = CodeMirror.fromTextArea(_code, {
-    lineNumbers: true,
-    cantEdit: true,
-    mode:  {
-        name: "javascript",
-        json: true
-    }
-});
 
 //  MOBILE CONFIG
 var elements = document.getElementsByClassName('drag-drawflow');
@@ -51,62 +41,43 @@ function positionMobile(ev) {
     mobile_last_move = ev;
 }
 
-//  EVENTS
-editor.on('nodeCreated', function (id) {
-    console.log("Node created " + id);
-})
+//  HTTP
+async function getCollections(){
+    let resp = await fetch("/collections",{
+        method: "GET"
+    }).catch(error=> console.error(error));
+    resp = resp.json();
+    return resp;
+}
 
-editor.on('nodeRemoved', function (id) {
-    console.log("Node removed " + id);
-})
+async function createCollection(collection){
+    const _data = {
+        collection: collection,
+    }
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    let resp = await fetch('/collections/new', {
+        body: JSON.stringify({..._data}),
+        headers: myHeaders,
+        method: "POST",
+    });
+    
+    return resp.json();
+}
 
-editor.on('nodeSelected', function (id) {
-    console.log("Node selected " + id);
-})
-
-editor.on('moduleCreated', function (name) {
-    console.log("Module Created " + name);
-})
-
-editor.on('moduleChanged', function (name) {
-    console.log("Module Changed " + name);
-})
-
-editor.on('connectionCreated', function (connection) {
-    console.log('Connection created');
-    console.log(connection);
-})
-
-editor.on('connectionRemoved', function (connection) {
-    console.log('Connection removed');
-    console.log(connection);
-})
-
-editor.on('mouseMove', function (position) {
-    console.log('Position mouse x:' + position.x + ' y:' + position.y);
-})
-
-editor.on('nodeMoved', function (id) {
-    console.log("Node moved " + id);
-})
-
-editor.on('zoom', function (zoom) {
-    console.log('Zoom level ' + zoom);
-})
-
-editor.on('translate', function (position) {
-    console.log('Translate x:' + position.x + ' y:' + position.y);
-})
-
-editor.on('addReroute', function (id) {
-    console.log("Reroute added " + id);
-})
-
-editor.on('removeReroute', function (id) {
-    console.log("Reroute removed " + id);
-})
-
-
+async function listCollection(){
+    const collectionList = await getCollections();
+    console.log({collectionList})
+    const list = document.getElementById('collectionList');
+    
+    collectionList.collections.forEach(_collection=>{
+        const collection = document.getElementById("collection-name");
+        collection.value = _collection;
+        list.innerHTML += `<li><div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="'${_collection}-schema'">
+        <i class="fa-solid fa-database mr-1"></i> <span>${_collection}</span>
+    </div></li>`;
+    })
+}
 
 //  DRAG AND DROP
 function allowDrop(ev) {
@@ -140,6 +111,7 @@ function addNodeToDrawFlow(name, pos_x, pos_y) {
     if(editor.editor_mode === 'fixed') {
         return false;
     }
+    
     pos_x = pos_x * ( editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)) - (editor.precanvas.getBoundingClientRect().x * ( editor.precanvas.clientWidth / (editor.precanvas.clientWidth * editor.zoom)));
     pos_y = pos_y * ( editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)) - (editor.precanvas.getBoundingClientRect().y * ( editor.precanvas.clientHeight / (editor.precanvas.clientHeight * editor.zoom)));
 
@@ -148,10 +120,13 @@ function addNodeToDrawFlow(name, pos_x, pos_y) {
         "express": (x,y)=> addExpress(x,y),
         "controller":(x,y)=> addController(x,y),
         "middleware": (x,y)=> addMiddleware(x,y),
-        "schema": (x,y)=> addScheme(x,y),
+        "collection": (x,y)=> addScheme(x,y),
         "prop": (x,y)=> addProp(x,y),
     }
     
+    if(!Object.keys(nodeTypes).includes(name)) {
+        if(name.includes("schema")) addScheme(pos_x, pos_y);
+    }
     nodeTypes[name](pos_x, pos_y);
 }
 
@@ -191,6 +166,12 @@ function addExpress(x,y) {
   <div class="card-body">
     <div class="row">
         <div class="col">
+            <label for="route" class="form-label">Route</label>
+            <input class="form-control" id="route" name="route" type="text" df-route>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
             <label for="Request" class="form-label">Request</label>
             <select class="form-select form-select-sm" aria-label="Request" df-method>
             <option selected value="get">GET</option>
@@ -198,12 +179,6 @@ function addExpress(x,y) {
             <option value="put">PUT</option>
             <option value="delete">DELETE</option>
             </select>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <label for="route" class="form-label">Route</label>
-            <input class="form-control" id="route" name="route" type="text" df-route>
         </div>
     </div>
   </div>
@@ -239,18 +214,21 @@ function addController(x,y){
     editor.addNode('controller', 1, 1, x, y, 'controller', data, controller);
 }
 
-function addScheme(x, y){
-    let data = { "schema": "" }
+async function addScheme(x, y){
+    const collection = document.getElementById("collection-name").value;
+    await createCollection(collection);
+
+    let data = { "schema": `${collection}` }
     const schema = `
 <div class="card m-0" style="width: 18rem;">
   <div class="card-header">
-    @Schema
+    @Collection
   </div>
   <div class="card-body">
     <div class="row">
         <div class="col">
-            <label for="schema" class="form-label">Schema Name</label>
-            <input class="form-control" id="schema" name="schema" placeholder="Schema Name" type="text" df-schema>
+            <label for="schema" class="form-label">Collection Name</label>
+            <h5>${collection} </h5>
         </div>
     </div>
   </div>

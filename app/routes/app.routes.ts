@@ -5,6 +5,8 @@ import  express, {
     Response, 
     NextFunction
 } from 'express';
+import { HttpCode } from '../models';
+import * as Model from '../models/x11.model';
 
 export class AppRoutes{
     
@@ -35,6 +37,12 @@ export class AppRoutes{
             res.end();
         });
 
+        // GET COLLECTIONS
+        this.app.route('/collections').get((req: Request, res: Response, next: NextFunction)=>{
+            const collections = Object.keys(Model.Models);
+            res.json({collections});
+        });
+
         //  ADD COLLECTION
         this.app.route('/collections/new').post((req: Request, res: Response, next: NextFunction)=>{
             try {
@@ -42,18 +50,27 @@ export class AppRoutes{
                 const file = fs.readFileSync('./app/models/x11.model.ts', {encoding: 'utf-8'});
                 
                 if(file.includes(collection)){ 
-                    res.json({msg: "Collection already exist."});
+                    res.status(HttpCode.CONFLICT).json({msg: "Collection already exist."});
                     return;
                 }
 
                 const strs = file.split("= {");
                 const newFile = [strs[0], `= {\n'${collection}': model('${collection}', dataSchema),`, strs[1]].join("");
                 fs.writeFileSync('./app/models/x11.model.ts', newFile, {encoding: 'utf-8'});
-                res.json({collection, newFile});
+                res.json({collection, msg: "created"});
 
             } catch (error) {
-                throw new Error(`${error}`);
+                this.showError(res, error);
             }
+        });
+    }
+
+    private async showError(res: Response, error: any){
+        res.status(HttpCode.SERVER_ERROR);
+        res.json({
+            msg: 'Server Error',
+            error: error['message'],
+            status:HttpCode.SERVER_ERROR,
         });
     }
 

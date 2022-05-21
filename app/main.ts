@@ -58,8 +58,8 @@ try {
 
     if (AppConfig?.data) { 
         let envFile = fs.readFileSync('.env', {encoding: 'utf-8'});
-        envFile = envFile.replace(/PORT=\d[0-9]{3}/g, `PORT=${AppConfig?.data['port']}`);
-        envFile = envFile.replace(/DB=\w+/, `DB=${AppConfig?.data['database']}`);  
+        /* envFile = envFile.replace(/PORT=\d[0-9]{3}/g, `PORT=${AppConfig?.data['port']}`);
+        envFile = envFile.replace(/DB=\w+/, `DB=${AppConfig?.data['database']}`); */
         fs.writeFileSync(".env", envFile, {encoding: 'utf-8'});
 
         app.set("port", process.env.PORT || 4200);

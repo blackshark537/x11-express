@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { Cripto } from '../services'
-import { iQuery, KeyNode, KeyValue, Models, Node, PropTypes } from '../models';
+import { HttpCode, iQuery, KeyNode, KeyValue, Models, Node, PropTypes } from '../models';
 import * as fs from 'fs';
 
 export class x11Controller{
@@ -31,15 +31,17 @@ export class x11Controller{
             const collection: string = collectionNode.data.schema;
 
             const _Models: KeyValue = Models;
-
-            if(query.param){
-                const { numValue, cond, value } = query;
-                const _value = numValue? parseInt(numValue) : value;
-                query.param[cond] = _value
+            
+            //  CONDITIONAL FILTERING
+            const _filter: KeyValue = {}
+            const { filter,cond, value } = query;
+            if( filter ){
+                _filter[filter] = {};
+                _filter[filter][cond] = value.includes(".")? parseFloat(value) : parseInt(value);
             }
-
+            
             const resp = await _Models[collection].find()
-            .where(query? {...query.filters, ...query.param} : {});
+            .where(query? {...query.filters, ..._filter } : {});
             res.json([
                ...resp
             ]);
@@ -57,9 +59,17 @@ export class x11Controller{
             const collection: string = collectionNode.data.schema;
 
             const _Models: KeyValue = Models;
-            
+
+            //  CONDITIONAL FILTERING
+            const _filter: KeyValue = {}
+            const { filter,cond, value } = query;
+            if( filter ){
+                _filter[filter] = {};
+                _filter[filter][cond] = value.includes(".")? parseFloat(value) : parseInt(value);
+            }
+
             const resp = await _Models[collection].findOne({_id: req.params.id})
-            .where(query? {...query} : {});
+            .where(query? {...query, ..._filter} : {});
             res.json(
                 resp
             );
@@ -169,11 +179,11 @@ export class x11Controller{
     }
 
     private async showError(res: Response, error: any){
-        res.status(500);
+        res.status(HttpCode.SERVER_ERROR);
         res.json({
             msg: 'Server Error',
             error: error['message'],
-            status: 500,
+            status:HttpCode.SERVER_ERROR,
         });
     }
 }

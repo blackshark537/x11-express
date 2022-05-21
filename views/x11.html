@@ -12,9 +12,12 @@
     <link rel="stylesheet" href="./index.scss">
 
     <!-- DRAWFLOW -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jerosoler/Drawflow/dist/drawflow.min.css">
+    <link rel="stylesheet" href="./dist/drawflow.min.css">
+
     <!-- ICONS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <!-- FONTS -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -37,15 +40,24 @@
             <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="controller">
                 <i class="fa-solid fa-gear"></i><span> Controller</span>
             </div>
-            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="schema">
+<!--             <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="schema">
                 <i class="fa-solid fa-database"></i><span> Schema</span>
-            </div>
+            </div> -->
             <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="prop">
                 <i class="fa-solid fa-atom"></i><span> Prop</span>
             </div>
-            <div class="d-grid" style="border-bottom: 1px solid grey;">
+            <div class="d-grid mt-1" style="border-bottom: 1px solid grey;">
+                <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#CollectionModal">
+                    <i class="fa-solid fa-database"></i> <span> Create Collection</span>
+                </button>
+            </div>
+            <div id="collections">
+                <ul id="collectionList">
+                </ul>
+            </div>
+            <div class="d-grid mt-1" style="border-bottom: 1px solid grey;">
                 <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#codeModal">
-                    <i class="fa-solid fa-filter"></i> <span>Middleware</span>
+                    <i class="fa-solid fa-filter"></i> <span> Create Middleware</span>
                 </button>
             </div>
         </div>
@@ -78,14 +90,23 @@
                             <h5 class="modal-title" id="codeModalLabel">@Middleware Function()</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body" style="height: 300px;">
-                            <!-- <textarea class="form-control focus" name="code" id="code" cols="50" rows="100" style="overflow: scroll;"></textarea> -->
-                            <wc-monaco-editor id="vscode" src="sample.js" language="javascript"></wc-monaco-editor>
+                        <div class="modal-body">
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label class="form-control-name" for="middleware-name">Name:</label>
+                                    <input id="middleware-name" type="text" class="form-control" placeholder="Middleware Name">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col" style="height: 300px;">
+                                    <wc-monaco-editor id="vscode" src="sample.js" language="javascript"></wc-monaco-editor>
+                                </div>
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button id="saveCode" type="button" class="btn btn-primary" onclick="addMiddleware(200,200)"
-                                data-bs-dismiss="modal">Save Code</button>
+                                data-bs-dismiss="modal">Save</button>
                         </div>
                     </div>
                 </div>
@@ -100,13 +121,34 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-
+                            <label class="form-control-label" for="module-name">Name: </label>
                             <input type="text" class="form-control" id="module-name" placeholder="Module Name">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button id="saveCode" type="button" class="btn btn-primary" onclick="addModule('laptops')"
-                                data-bs-dismiss="modal">Save Module</button>
+                                data-bs-dismiss="modal">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- New Collection Modal -->
+            <div class="modal fade" id="CollectionModal" tabindex="-1" aria-labelledby="CollectionModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="CollectionModalLabel">New @Collection</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label class="form-control-label" for="collection-name">Name: </label>
+                            <input type="text" class="form-control" id="collection-name" placeholder="Collection Name">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button id="saveCode" type="button" class="btn btn-primary" onclick="addNodeToDrawFlow('collection', 300,300)"
+                                data-bs-dismiss="modal">Save</button>
                         </div>
                     </div>
                 </div>
@@ -122,7 +164,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
 
     <!-- DrawFlow JS -->
-    <script src="https://cdn.jsdelivr.net/gh/jerosoler/Drawflow/dist/drawflow.min.js"></script>
+    <script src="./dist/drawflow.min.js"></script>
 
     <!-- X11-Express JS -->
     <script src="./index.js"></script>

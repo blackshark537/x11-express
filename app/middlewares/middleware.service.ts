@@ -6,6 +6,6 @@ export const middlewares = {
     "hello": (req: Request, res: Response, next: NextFunction)=>{
         console.log("hello");
         console.log("encripted", Cripto.encript("Hello"));
-        next();
+        res.send( Cripto.encript("Hello"));
     }
 }

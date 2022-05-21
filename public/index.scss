@@ -218,9 +218,32 @@ header a {
 }
 
 .drawflow .drawflow-node .input {
-  left: -20px !important;
+  left: -12px !important;
 }
 
 .drawflow .drawflow-node .output {
-  right: 0px !important;
+  right: 8px !important;
+}
+
+.drawflow .controller .input_1 {
+  top: 4px !important;
+}
+
+.drawflow .controller .output_1 {
+  top: 38px !important;
+  background-color: #4effa9 !important;
+}
+
+.drawflow .schema .output_1 {
+  top: 38px !important;
+  background-color: #4effa9 !important;
+}
+
+.drawflow .express .output_1 {
+  top: 72px !important;
+  background-color: #4effa9 !important;
+}
+
+.drawflow .drawflow-node .selected{
+  background: transparent !important;
 }
