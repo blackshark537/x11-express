@@ -20,7 +20,7 @@ export class CoreService{
 
     start(){
         try {
-            const file = fs.readFileSync('./app/app-config.json', {encoding: 'utf-8'});
+            const file = fs.readFileSync('./src/app-config.json', {encoding: 'utf-8'});
             const dfSchema = JSON.parse(file);
             const modules: string[] = Object.keys(dfSchema);
             modules.forEach(module=>{

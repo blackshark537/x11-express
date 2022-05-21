@@ -26,13 +26,13 @@ export class AppRoutes{
 
         //  SAVE MODEL AND RESET THE APP
         this.app.route('/model').post((req: Request, res: Response, next: NextFunction)=>{
-            fs.writeFileSync('./app/app-config.json', JSON.stringify(req.body));
+            fs.writeFileSync('./src/app-config.json', JSON.stringify(req.body));
             process.exit(1);
         });
 
         //  GET MODEL
         this.app.route('/model').get( (req: Request, res: Response, next: NextFunction)=>{
-            const f = fs.readFileSync('./app/app-config.json', {encoding: 'utf-8'});
+            const f = fs.readFileSync('./src/app-config.json', {encoding: 'utf-8'});
             res.json(JSON.parse(f));
             res.end();
         });

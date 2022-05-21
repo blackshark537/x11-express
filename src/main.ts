@@ -52,7 +52,7 @@ app.set("db", process.env.DB  || "x11-Express");
 
 // App PORT and DB configutation
 try {
-    const file = fs.readFileSync('./app/app-config.json', {encoding: 'utf-8'});
+    const file = fs.readFileSync('./src/app-config.json', {encoding: 'utf-8'});
     const dfSchema = JSON.parse(file);
     const AppConfig = (Object.values(dfSchema['Home']['data']) as Node[]).find(el=> el.name === 'app');
 

@@ -11,7 +11,7 @@ export class x11Controller{
     private constructor(){
         //  LOAD APP CONFIG
         try {
-            const file = fs.readFileSync('./app/app-config.json', { encoding: 'utf-8'});
+            const file = fs.readFileSync('./src/app-config.json', { encoding: 'utf-8'});
             this.appConfig = JSON.parse(file);
         } catch (error) {
             throw new Error(error as string);
