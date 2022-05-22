@@ -102,8 +102,8 @@ IE:
     
     //  AND QUERY CHAIN
     //IE: Get some Object by conditional start - end String param value
-    filters[$and][0][data.param][$regex]=start&
-    filters[$and][1][data.param][$regex]=end
+    filters[$and][0][data.param1][$regex]=start&
+    filters[$and][1][data.param2][$regex]=end
 
     //  OR QUERY CHAIN
     filters[$or][0][data.param1][$regex]=value&
