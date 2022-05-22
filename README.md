@@ -52,30 +52,29 @@ npm start:dev
 ### Middleware
 Middleware Function
 ```javascript
-    // Midleware uses v8 virtual machine to extend functionality.
-    function middleware(req,res,next){
+    (req: Request, res: Response, next: NextFunction) => {
         next();
     }
-    middleware(req, res, next);
 ```
 
-Middleware v8 virtual machine context parameters.
-
+middleware classes
 Parameter | Type | Description
 --- | --- | ---
 `req` | Object | Express request
 `res` | Object | Express response
 `next` | Object | Express next
-`logs` | Array | To console.log
-`file` | Object | To save file
-`file.name` | string | Name of the file
-`file.data` | Array | Data to save in file
+`Crypto` | Class | To achive encryptions.
+`Crypto.encrypt(data: any)` | Class | To encrypt data.
+`Crypto.compare(data: any, hash: string)` | Class | returns a boolean.
+`fs` | Class | To save read and append a file.
+`fs.read(path: string)` | Function | To read a file.
+`fs.write(path: string, data: any)` | Function | To write a file.
+`fs.append(path: string, data: any)` | Function | Append to a file.
 
 ### MongoDB Data Model
 Parameter | Type | Description
 --- | --- | ---
 `_id` | string | mongoose.types.objectid
-`_collection` | string | collection name
 `data` | Object | your data
 `createdAt` | Date | created date 
 `updatedAt` | Date | created date 
@@ -84,11 +83,11 @@ IE:
 ```javascript
     {
         "_id": "6284540185fc85b40e9e7798",
-        "_collection": "products",
         "data": {
             "name": "One Plus 6T - 128GB - Mirror Black (Unlocked) (8GB RAM)",
             "price": 150.00,
-            "category": "phones"
+            "category": "phones",
+            "stock": 200,
         },
         "createdAt": "2022-05-18T02:03:45.468Z",
         "updatedAt": "2022-05-18T02:03:45.468Z",
@@ -111,12 +110,12 @@ IE:
     filters[$or][1][data.param2][$regex]=value
 
     //  CONDITIONAL
-    //IE: Get some Object with conditional ($gt, $lt or $eq) Number param value.
-    filter=data.param&cond=$gt&numValue=value
-    filter=data.param&cond=$lt&numValue=value
-    filter=data.param&cond=$gte&numValue=value
-    filter=data.param&cond=$lte&numValue=value
-    filter=data.param&cond=$eq&numValue=value
+    //IE: Get some Object with conditional ($gt, $lt or $eq) Only Numbers param value.
+    filter=data.param&cond=$gt&value=value
+    filter=data.param&cond=$lt&value=value
+    filter=data.param&cond=$gte&value=value
+    filter=data.param&cond=$lte&value=value
+    filter=data.param&cond=$eq&value=value
 ```
 
 ## License

@@ -7,7 +7,7 @@ import express,{
 } from 'express';
 
 import { x11Controller } from '../controllers';
-import { middlewares } from '../middlewares';
+import { Middlewares } from '../middlewares';
 import { KeyValue, Node } from '../models';
 
 export class CoreService{
@@ -38,7 +38,7 @@ export class CoreService{
                             middlewareNodes.map(middlewareNode=>{
                                 try {
                                     const name = middlewareNode.data.name;
-                                    const _middlewares: KeyValue = middlewares
+                                    const _middlewares: KeyValue = Middlewares
                                     this.app.use(route, function(req,res, next){
                                         _middlewares[name](req, res, next);
                                     });

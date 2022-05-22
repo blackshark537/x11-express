@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { Cripto } from '../services'
+import { Crypto } from '../services'
 import { HttpCode, iQuery, KeyNode, KeyValue, Models, Node, PropTypes } from '../models';
 import * as fs from 'fs';
 
@@ -166,7 +166,7 @@ export class x11Controller{
         if( node['type'] === PropTypes.DATE)
             return new Date(body[node['name']]);
         if( node['type'] === PropTypes.ENCRYPTED)
-            return Cripto.encript(body[node['name']]);
+            return Crypto.encrypt(body[node['name']]);
 
         return body[node['name']];
     }

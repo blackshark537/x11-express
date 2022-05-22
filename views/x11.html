@@ -52,13 +52,17 @@
                 </button>
             </div>
             <div id="collections">
-                <ul id="collectionList">
+                <ul id="collectionList" class="list-group">
                 </ul>
             </div>
             <div class="d-grid mt-1" style="border-bottom: 1px solid grey;">
                 <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#codeModal">
                     <i class="fa-solid fa-filter"></i> <span> Create Middleware</span>
                 </button>
+            </div>
+            <div id="middlewares">
+                <ul id="middlewareList" class="list-group">
+                </ul>
             </div>
         </div>
     
@@ -84,28 +88,51 @@
             
             <!-- Code Editor Modal -->
             <div class="modal fade" id="codeModal" tabindex="-1" aria-labelledby="codeModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-xl">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="codeModalLabel">@Middleware Function()</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="row mb-3">
-                                <div class="col">
-                                    <label class="form-control-name" for="middleware-name">Name:</label>
-                                    <input id="middleware-name" type="text" class="form-control" placeholder="Middleware Name">
-                                </div>
-                            </div>
                             <div class="row">
-                                <div class="col" style="height: 300px;">
-                                    <wc-monaco-editor id="vscode" src="sample.js" language="javascript"></wc-monaco-editor>
+                                <div class="col-12 col-md-7">
+                                    <div class="row mb-3">
+                                        <div class="col-12">
+                                            <label class="form-control-name" for="middleware-name">Name:</label>
+                                            <input id="middleware-name" type="text" class="form-control" placeholder="Middleware Name:">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12" style="height: 300px;">
+                                            <wc-monaco-editor id="vscode" src="sample.js" language="javascript"></wc-monaco-editor>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-5">
+                                    <h4>@Notice</h4>
+                                    <p class="bg-dark text-light" style="overflow: scroll;">
+                                        /** <br>
+                                        * Middleware Function<br>
+                                        * global variables and classes<br>
+                                        *| -------------------------------------------------------------<br>
+                                        *| <span class="green">Crypto.encript</span><span class="prpl">(</span><span class="org">data</span> : <span class="text-primary">any</span> <span class="prpl">)</span> To encrypt data.  <br>
+                                        *| <span class="green">Crypto.compare</span><span class="prpl">(</span><span class="org">data</span> : <span class="text-primary">any</span>, <span class="org">hashToCompareWith</span>: <span class="text-primary">string</span> <span class="prpl">)</span> To Compare returns a <span class="text-primary"> boolean</span>  <br>
+                                        *| <span class="green">fs.read</span> <span class="prpl">(</span><span class="org">path</span> : <span class="text-primary">string</span> <span class="prpl">)</span> To Read a File.  <br>
+                                        *| <span class="green">fs.write</span> <span class="prpl">(</span><span class="org">path</span> : <span class="text-primary">string</span> , <span class="org">data</span>: <span class="text-primary">any</span> <span class="prpl">)</span> To Write a File.  <br>
+                                        *| <span class="green">fs.append</span> <span class="prpl">(</span><span class="org">path</span> : <span class="text-primary">string</span> , <span class="org">data</span>: <span class="text-primary">any</span> <span class="prpl">)</span> Append To a File.  <br>
+                                        *| -------------------------------------------------------------<br>
+                                        * @param {Request} req express request<br>
+                                        * @param {Response} res express response<br>
+                                        * @param {NextFunction} next express nextfunction<br>
+                                        */
+                                    </p>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button id="saveCode" type="button" class="btn btn-primary" onclick="addMiddleware(200,200)"
+                            <button id="saveCode" type="button" class="btn btn-primary" onclick="addNodeToDrawFlow('middleware', 300,300)"
                                 data-bs-dismiss="modal">Save</button>
                         </div>
                     </div>

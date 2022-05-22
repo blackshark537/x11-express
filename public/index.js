@@ -7,7 +7,9 @@ editor.zoom_min = 0.4;
 editor.start();
 
 // INIT
-listCollection();
+listCollections();
+listMiddlewares();
+_import();
 
 //  LOAD MODULES
 let modules = ['Home'];
@@ -42,6 +44,46 @@ function positionMobile(ev) {
 }
 
 //  HTTP
+
+async function getMiddlewares(){
+    let resp = await fetch("/middlewares",{
+        method: "GET"
+    }).catch(error=> console.error(error));
+    resp = resp.json();
+    return resp;
+}
+
+async function createMiddleware(middlewareName){
+    const _data = {
+        name: middlewareName,
+        code: vscode.value
+    }
+    const myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    let resp = await fetch('/middlewares/new', {
+        body: JSON.stringify({..._data}),
+        headers: myHeaders,
+        method: "POST",
+    });
+    
+    return resp.json();
+}
+
+async function listMiddlewares(){
+    const middlewareList = await getMiddlewares();
+    
+    const list = document.getElementById('middlewareList');
+    list.innerHTML="";
+
+    middlewareList.middlewares.forEach(_middleware=>{
+        const middleware = document.getElementById("middleware-name");
+        middleware.value = _middleware;
+        list.innerHTML += `<li class="list-group-item" ><div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="${_middleware}-middleware">
+        <i class="fa-solid fa-database mr-1"></i> <span>${_middleware}</span>
+    </div></li>`;
+    })
+}
+
 async function getCollections(){
     let resp = await fetch("/collections",{
         method: "GET"
@@ -65,7 +107,7 @@ async function createCollection(collection){
     return resp.json();
 }
 
-async function listCollection(){
+async function listCollections(){
     const collectionList = await getCollections();
     console.log({collectionList})
     const list = document.getElementById('collectionList');
@@ -73,7 +115,7 @@ async function listCollection(){
     collectionList.collections.forEach(_collection=>{
         const collection = document.getElementById("collection-name");
         collection.value = _collection;
-        list.innerHTML += `<li><div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="'${_collection}-schema'">
+        list.innerHTML += `<li class="list-group-item" ><div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="${_collection}-schema">
         <i class="fa-solid fa-database mr-1"></i> <span>${_collection}</span>
     </div></li>`;
     })
@@ -125,14 +167,16 @@ function addNodeToDrawFlow(name, pos_x, pos_y) {
     }
     
     if(!Object.keys(nodeTypes).includes(name)) {
-        if(name.includes("schema")) addScheme(pos_x, pos_y);
+        if(name.includes("schema")) addScheme(pos_x, pos_y, name.split("-")[0]);
+        if(name.includes("middleware")) addMiddleware(pos_x, pos_y, name.split("-")[0]);
+        return;
     }
     nodeTypes[name](pos_x, pos_y);
 }
 
 //  NODES TYPES DEFINITION
 function addApp(x,y){
-    const data = { "port": 3000, "database": "x11-Express"};
+    const data = { "port": 3000, "database": "x11"};
     const app = `<div class="card m-0" style="width: 18rem;">
   <div class="card-header">
     @App Configuration
@@ -141,7 +185,7 @@ function addApp(x,y){
     <div class="row">
         <div class="col">
             <label for="port" class="form-label">App Port</label>
-            <input class="form-control" id="port" name="port" placeholder="App Port ie: 3000 " type="text" df-port>
+            <input class="form-control" id="port" name="port" placeholder="App Port ie: 3000 " type="number" df-port>
         </div>
     </div>
     <div class="row">
@@ -214,8 +258,35 @@ function addController(x,y){
     editor.addNode('controller', 1, 1, x, y, 'controller', data, controller);
 }
 
-async function addScheme(x, y){
-    const collection = document.getElementById("collection-name").value;
+async function addMiddleware(x,y, name){
+    const middlewareName = name? name : document.getElementById("middleware-name").value;
+    await createMiddleware(middlewareName);
+
+    let data = { "code": "", "name": "" };
+    data["code"] = vscode.value;
+    data["name"] = middlewareName;
+
+    let middleware = `
+    <div class="card m-0" style="width: 18rem;">
+      <div class="card-header">
+        @Middleware
+      </div>
+      <div class="card-body">
+        <div class="row">
+            <div class="col">
+            <label for="name" class="form-label">Middleware Name</label>
+            <h5>${middlewareName}</h5>
+            </div>
+        </div>
+      </div>
+    </div>
+    `.trim().split('\n').join('').split('\t').join('');
+    editor.addNode('middleware', 1, 0, x, y, 'middleware', data, middleware);
+    document.location.href = '/x11';
+}
+
+async function addScheme(x, y, name){
+    const collection = name? name : document.getElementById("collection-name").value;
     await createCollection(collection);
 
     let data = { "schema": `${collection}` }
@@ -235,6 +306,7 @@ async function addScheme(x, y){
 </div>
 `.trim().split('\n').join('').split('\t').join('');
 editor.addNode('schema', 1, 1, x, y, 'schema', data, schema);
+document.location.href = '/x11';
 }
 
 function addProp(x,y){
@@ -259,9 +331,8 @@ function addProp(x,y){
                 <option value="number">Number</option>
                 <option value="boolean">Boolean</option>
                 <option value="array">Array</option>
-                <option value="object">Object</option>
                 <option value="date">Date</option>
-                <option value="encrypted">Date</option>
+                <option value="encrypted">Encrypted</option>
             </select>
         </div>
     </div>
@@ -269,30 +340,6 @@ function addProp(x,y){
 </div>
     `.trim().split('\n').join('').split('\t').join('');
     editor.addNode('prop', 1, 0, x, y, 'prop', prop_data, prop);
-}
-
-function addMiddleware(x,y){
-    let data = { "code": "", "name": "" };
-    data["code"] = vscode.value;
-
-    let middleware = `
-    <div class="card m-0" style="width: 18rem;">
-      <div class="card-header">
-        @Middleware
-      </div>
-      <div class="card-body">
-        <div class="row">
-            <div class="col">
-            <label for="name" class="form-label">Middleware Name</label>
-            <input class="form-control" id="name" name="name" placeholder="Middleware Name" type="text" df-name>
-                <!--<button id="middleware" type="button" class="btn btn-outline-dark"
-                data-bs-toggle="modal" data-bs-target="#codeModal">Edit Function</button>-->
-            </div>
-        </div>
-      </div>
-    </div>
-    `.trim().split('\n').join('').split('\t').join('');
-    editor.addNode('middleware', 1, 0, x, y, 'middleware', data, middleware);
 }
 
 //  MISC
