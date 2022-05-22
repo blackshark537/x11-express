@@ -64,8 +64,8 @@ Parameter | Type | Description
 `res` | Object | Express response
 `next` | Object | Express next
 `Crypto` | Class | To achive encryptions.
-`Crypto.encrypt(data: any)` | Class | To encrypt data.
-`Crypto.compare(data: any, hash: string)` | Class | returns a boolean.
+`Crypto.encrypt(data: any)` | Function | To encrypt data.
+`Crypto.compare(data: any, hash: string)` | Function | returns a boolean.
 `fs` | Class | To save read and append a file.
 `fs.read(path: string)` | Function | To read a file.
 `fs.write(path: string, data: any)` | Function | To write a file.
