@@ -1,4 +1,3 @@
-import  vm               from 'vm';
 import  fs               from 'fs';
 import express,{
     Request, 
@@ -6,9 +5,9 @@ import express,{
     NextFunction
 } from 'express';
 
-import { x11Controller } from '../controllers';
-import { Middlewares } from '../middlewares';
-import { KeyValue, Node } from '../models';
+import { ControllerModule } from '../controllers';
+import { MiddlewareModule } from '../middlewares';
+import { KeyValue, Node } from '../interfaces/';
 
 export class CoreService{
     
@@ -20,7 +19,8 @@ export class CoreService{
 
     start(){
         try {
-            const file = fs.readFileSync('./src/app-config.json', {encoding: 'utf-8'});
+            const path = './app-config.json';
+            const file = fs.readFileSync(path, {encoding: 'utf-8'});
             const dfSchema = JSON.parse(file);
             const modules: string[] = Object.keys(dfSchema);
             modules.forEach(module=>{
@@ -38,7 +38,7 @@ export class CoreService{
                             middlewareNodes.map(middlewareNode=>{
                                 try {
                                     const name = middlewareNode.data.name;
-                                    const _middlewares: KeyValue = Middlewares
+                                    const _middlewares: KeyValue = MiddlewareModule
                                     this.app.use(route, function(req,res, next){
                                         _middlewares[name](req, res, next);
                                     });
@@ -54,10 +54,14 @@ export class CoreService{
                                 const _app: KeyValue = this.app;
                                 (_app[method])(route, (req: Request, res: Response, next: NextFunction)=>{
                                     try {
+                                        const controller: KeyValue = ControllerModule;
+                                        const name = controllerNode.data.name;
+                                        const func = controllerNode.data.func;
                                         req.query['collection'] = collections[0];
                                         req.query['module'] = module;
-                                        const controller: KeyValue = x11Controller.getInstance();
-                                        controller[controllerNode.data.ctrl](req, res, next);
+                                        req.query['func'] = func
+                                        console.log({name,func});
+                                        controller[name](req, res, next);
                                     } catch (error) {
                                         throw new Error(`${error}`);
                                     }

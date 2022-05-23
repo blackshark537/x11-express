@@ -69,6 +69,17 @@ async function createMiddleware(middlewareName){
     return resp.json();
 }
 
+async function editMiddleware(id){
+    console.log(id);
+    const middlewareName = document.getElementById('middleware-name');
+    middlewareName.value = id;
+    vscode.src = `/middleware/code/${id}`;
+    const myModal = new bootstrap.Modal(document.getElementById('codeModal'), {
+        keyboard: false
+    });
+    myModal.show();
+}
+
 async function listMiddlewares(){
     const middlewareList = await getMiddlewares();
     
@@ -78,8 +89,8 @@ async function listMiddlewares(){
     middlewareList.middlewares.forEach(_middleware=>{
         const middleware = document.getElementById("middleware-name");
         middleware.value = _middleware;
-        list.innerHTML += `<li class="list-group-item" ><div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="${_middleware}-middleware">
-        <i class="fa-solid fa-database mr-1"></i> <span>${_middleware}</span>
+        list.innerHTML += `<li class="list-group-item" ><div draggable="true" ondragstart="drag(event)" data-node="${_middleware}-middleware">
+        <i class="fa-solid fa-filter mr-1"></i> <span>${_middleware.toLowerCase()}</span>
     </div></li>`;
     })
 }
@@ -115,7 +126,7 @@ async function listCollections(){
     collectionList.collections.forEach(_collection=>{
         const collection = document.getElementById("collection-name");
         collection.value = _collection;
-        list.innerHTML += `<li class="list-group-item" ><div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="${_collection}-schema">
+        list.innerHTML += `<li class="list-group-item" ><div class="" draggable="true" ondragstart="drag(event)" data-node="${_collection}-schema">
         <i class="fa-solid fa-database mr-1"></i> <span>${_collection}</span>
     </div></li>`;
     })
@@ -221,6 +232,7 @@ function addExpress(x,y) {
             <option selected value="get">GET</option>
             <option value="post">POST</option>
             <option value="put">PUT</option>
+            <option value="patch">PATCH</option>
             <option value="delete">DELETE</option>
             </select>
         </div>
@@ -231,30 +243,32 @@ function addExpress(x,y) {
 editor.addNode('express', 0, 1, x, y, 'express', data, express);
 }
 
-function addController(x,y){
-    let data = { "ctrl": 'findAll' }
+function addController(x,y, name="x11"){
+    let data = { "func": 'findAll', "name": name };
+
     let controller = `
     <div class="card m-0" style="width: 18rem;">
       <div class="card-header">
-        @Controller
+        @${name}-Controller
       </div>
       <div class="card-body">
         <div class="row">
             <div class="col">
                 <label for="Controller" class="form-label">Action:</label>
-                <select class="form-select form-select-sm" aria-label="Controller" df-ctrl>
+                <select class="form-select form-select-sm" aria-label="Controller" df-func>
                 <option selected value="findAll">FindAll</option>
                 <option value="findOne">FindOne</option>
                 <option value="create">Create</option>
                 <option value="update">Update</option>
                 <option value="delete">Delete</option>
-                <option value="dropCollection">Delete Many</option>
                 </select>
             </div>
         </div>
       </div>
     </div>
     `.trim().split('\n').join('').split('\t').join('');
+    //<option value="dropCollection">Delete Many</option>
+
     editor.addNode('controller', 1, 1, x, y, 'controller', data, controller);
 }
 
@@ -270,6 +284,9 @@ async function addMiddleware(x,y, name){
     <div class="card m-0" style="width: 18rem;">
       <div class="card-header">
         @Middleware
+        <button class="btn btn-dark" onclick="editMiddleware('${middlewareName}')">
+        <i class="fa-solid fa-pen"></i>
+        </button>
       </div>
       <div class="card-body">
         <div class="row">
@@ -282,7 +299,6 @@ async function addMiddleware(x,y, name){
     </div>
     `.trim().split('\n').join('').split('\t').join('');
     editor.addNode('middleware', 1, 0, x, y, 'middleware', data, middleware);
-    document.location.href = '/x11';
 }
 
 async function addScheme(x, y, name){
@@ -300,13 +316,13 @@ async function addScheme(x, y, name){
         <div class="col">
             <label for="schema" class="form-label">Collection Name</label>
             <h5>${collection} </h5>
+            <p class="schema-data">Data</p>
         </div>
     </div>
   </div>
 </div>
 `.trim().split('\n').join('').split('\t').join('');
 editor.addNode('schema', 1, 1, x, y, 'schema', data, schema);
-document.location.href = '/x11';
 }
 
 function addProp(x,y){

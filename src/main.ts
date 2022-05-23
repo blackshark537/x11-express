@@ -11,7 +11,7 @@ import 'dotenv/config'
 import { AppRoutes } from './routes';
 import  express from 'express';
 import { connect } from 'mongoose';
-import { Node } from './models';
+import { Node } from './interfaces/';
 import { CoreService } from './core';
 
 // APP CONFIGURATION
@@ -52,7 +52,8 @@ app.set("db", process.env.DB  || "x11-Express");
 
 // App PORT and DB configutation
 try {
-    const file = fs.readFileSync('./src/app-config.json', {encoding: 'utf-8'});
+    const path = './app-config.json';
+    const file = fs.readFileSync(path, {encoding: 'utf-8'});
     const dfSchema = JSON.parse(file);
     const AppConfig = (Object.values(dfSchema['Home']['data']) as Node[]).find(el=> el.name === 'app');
 

@@ -30,7 +30,7 @@
         </div>
     </header>
     <div class="wrapper">
-        <div class="col-2">
+        <div class="col-2" style="height: 90vh; overflow-y: scroll;">
             <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="app">
                 <i class="fa-solid fa-rocket"></i><span>App</span>
             </div>
@@ -40,30 +40,49 @@
             <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="controller">
                 <i class="fa-solid fa-gear"></i><span> Controller</span>
             </div>
-<!--             <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="schema">
-                <i class="fa-solid fa-database"></i><span> Schema</span>
-            </div> -->
             <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="prop">
                 <i class="fa-solid fa-atom"></i><span> Prop</span>
             </div>
-            <div class="d-grid mt-1" style="border-bottom: 1px solid grey;">
-                <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#CollectionModal">
-                    <i class="fa-solid fa-database"></i> <span> Create Collection</span>
-                </button>
+            <div class="accordion" id="accordionCollection">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                             <span class="ml-1"> Collections List</span>
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionCollection">
+                        <div id="collections" class="accordion-body">
+                            <ul id="collectionList" class="list-group">
+                            </ul>
+
+                            <div class="d-grid mt-1" >
+                                <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#CollectionModal">
+                                    <i class="fa-solid fa-database"></i> <span> New Collection</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div> 
+                </div>
             </div>
-            <div id="collections">
-                <ul id="collectionList" class="list-group">
-                </ul>
+
+
+            <div class="accordion" id="accordionMiddleware">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMiddlewares" aria-expanded="true" aria-controls="collapseOne">
+                            <span>Middlewares List</span>
+                        </button>
+                    </h2>
+                    <div id="collapseMiddlewares" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionMiddleware">
+                        <div id="middlewares" class="accordion-body">
+                            <ul id="middlewareList" class="list-group">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="d-grid mt-1" style="border-bottom: 1px solid grey;">
-                <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#codeModal">
-                    <i class="fa-solid fa-filter"></i> <span> Create Middleware</span>
-                </button>
-            </div>
-            <div id="middlewares">
-                <ul id="middlewareList" class="list-group">
-                </ul>
-            </div>
+            
+            
         </div>
     
         <div class="col-10">
@@ -105,7 +124,7 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-12" style="height: 300px;">
-                                            <wc-monaco-editor id="vscode" src="sample.js" language="javascript"></wc-monaco-editor>
+                                            <wc-monaco-editor id="vscode" src="sample.txt" language="javascript"></wc-monaco-editor>
                                         </div>
                                     </div>
                                 </div>
@@ -114,7 +133,7 @@
                                     <p class="bg-dark text-light" style="overflow: scroll;">
                                         /** <br>
                                         * Middleware Function<br>
-                                        * global variables and classes<br>
+                                        * Utils Classes<br>
                                         *| -------------------------------------------------------------<br>
                                         *| <span class="green">Crypto.encript</span><span class="prpl">(</span><span class="org">data</span> : <span class="text-primary">any</span> <span class="prpl">)</span> To encrypt data.  <br>
                                         *| <span class="green">Crypto.compare</span><span class="prpl">(</span><span class="org">data</span> : <span class="text-primary">any</span>, <span class="org">hashToCompareWith</span>: <span class="text-primary">string</span> <span class="prpl">)</span> To Compare returns a <span class="text-primary"> boolean</span>  <br>
@@ -122,9 +141,6 @@
                                         *| <span class="green">fs.write</span> <span class="prpl">(</span><span class="org">path</span> : <span class="text-primary">string</span> , <span class="org">data</span>: <span class="text-primary">any</span> <span class="prpl">)</span> To Write a File.  <br>
                                         *| <span class="green">fs.append</span> <span class="prpl">(</span><span class="org">path</span> : <span class="text-primary">string</span> , <span class="org">data</span>: <span class="text-primary">any</span> <span class="prpl">)</span> Append To a File.  <br>
                                         *| -------------------------------------------------------------<br>
-                                        * @param {Request} req express request<br>
-                                        * @param {Response} res express response<br>
-                                        * @param {NextFunction} next express nextfunction<br>
                                         */
                                     </p>
                                 </div>
@@ -132,8 +148,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button id="saveCode" type="button" class="btn btn-primary" onclick="addNodeToDrawFlow('middleware', 300,300)"
-                                data-bs-dismiss="modal">Save</button>
+                            <!-- <button id="saveCode" type="button" class="btn btn-primary" onclick="addNodeToDrawFlow('middleware', 300,300)"
+                                data-bs-dismiss="modal">Save</button> -->
                         </div>
                     </div>
                 </div>

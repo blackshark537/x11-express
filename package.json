@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rm -rf ./dist && tsc",
     "start": "tsc && node --unhandled-rejections=strict ./dist/main.js",
-    "start:dev": "./node_modules/nodemon/bin/nodemon.js -e ts  --exec \"npm run start\"",
+    "start:dev": "./node_modules/nodemon/bin/nodemon.js -e .ts,.json  --exec \"npm run start\"",
     "debug": "export DEBUG=* && npm run start",
     "test": "nodemon ./dist/main.js"
   },

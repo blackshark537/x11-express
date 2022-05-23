@@ -1,7 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import { Crypto } from '../services'
-import { HttpCode, iQuery, KeyNode, KeyValue, Models, Node, PropTypes } from '../models';
+import { ModelModule } from '../models'
+import { HttpCode, iQuery, KeyNode, KeyValue, Node, PropTypes } from '../interfaces/x11.interface';
 import * as fs from 'fs';
+
+const Models = ModelModule;
 
 export class x11Controller{
     
@@ -11,7 +14,7 @@ export class x11Controller{
     private constructor(){
         //  LOAD APP CONFIG
         try {
-            const file = fs.readFileSync('./src/app-config.json', { encoding: 'utf-8'});
+            const file = fs.readFileSync('./app-config.json', { encoding: 'utf-8'});
             this.appConfig = JSON.parse(file);
         } catch (error) {
             throw new Error(error as string);
