@@ -8,11 +8,13 @@ import  winston          from 'winston';
 import  expressWinston   from 'express-winston';
 
 import 'dotenv/config'
-import { AppRoutes } from './routes';
-import  express from 'express';
-import { connect } from 'mongoose';
-import { Node } from './interfaces/';
-import { CoreService } from './core';
+
+import  express         from 'express';
+import { iNode }        from './interfaces/';
+import { connect }      from 'mongoose';
+import { AppRoutes }    from './routes';
+import { CoreService }  from './core';
+
 
 // APP CONFIGURATION
 const app: express.Application = express();
@@ -27,8 +29,7 @@ app.use(express.static('public'));
 // CORS PERMITION
 app.use(cors());
 
-// here we are preparing the expressWinston logging middleware configuration,
-// which will automatically log all HTTP requests handled by Express.js
+// LOGGIN MIDDLEWARE
 const loggerOptions: expressWinston.LoggerOptions = {
     transports: [new winston.transports.Console()],
     format: winston.format.combine(
@@ -38,14 +39,14 @@ const loggerOptions: expressWinston.LoggerOptions = {
     ),
 };
 
-const debugLog: debug.IDebugger = debug('app');
-
 // when not debugging, log requests as one-liners
 if (!process.env.DEBUG) {
     loggerOptions.meta = false; 
 }
 
-// initialize the logger with the above configuration
+// APP INIT
+const debugLog: debug.IDebugger = debug('app');
+
 app.use(expressWinston.logger(loggerOptions));
 app.set("port", process.env.PORT || 4200);
 app.set("db", process.env.DB  || "x11-Express");
@@ -55,12 +56,12 @@ try {
     const path = './app-config.json';
     const file = fs.readFileSync(path, {encoding: 'utf-8'});
     const dfSchema = JSON.parse(file);
-    const AppConfig = (Object.values(dfSchema['Home']['data']) as Node[]).find(el=> el.name === 'app');
+    const AppConfig = (Object.values(dfSchema['Home']['data']) as iNode[]).find(el=> el.name === 'app');
 
     if (AppConfig?.data) { 
         let envFile = fs.readFileSync('.env', {encoding: 'utf-8'});
-        /* envFile = envFile.replace(/PORT=\d[0-9]{3}/g, `PORT=${AppConfig?.data['port']}`);
-        envFile = envFile.replace(/DB=\w+/, `DB=${AppConfig?.data['database']}`); */
+        envFile = envFile.replace(/PORT=\d[0-9]{3}/g, `PORT=${AppConfig?.data['port']}`);
+        envFile = envFile.replace(/DB=\w+/, `DB=${AppConfig?.data['database']}`);
         fs.writeFileSync(".env", envFile, {encoding: 'utf-8'});
 
         app.set("port", process.env.PORT || 4200);
@@ -74,7 +75,7 @@ const appRoutes = new AppRoutes(app);
 appRoutes.configureRoutes();
 
 const core = new CoreService(app);
-core.start();
+core.compile();
 
 // START SERVER
 connect(`mongodb://localhost:27017/${app.get("db")}`, (error)=>{

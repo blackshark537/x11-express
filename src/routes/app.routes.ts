@@ -53,7 +53,7 @@ export class AppRoutes{
                 const path = process.env.PRODUCTION? "./dist/middlewares/middleware.module.js" : "./src/middlewares/middleware.module.ts";
                 const file = fs.readFileSync(path, {encoding: 'utf-8'});
 
-                const div1 = file.split(`"${key}" : `);
+                const div1 = file.trim().split(`"${key}":`);
                 const div2 = div1[1].split('},');
                 res.send(div2[0]+'\n}');
                 res.end();

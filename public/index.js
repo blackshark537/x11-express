@@ -175,6 +175,8 @@ function addNodeToDrawFlow(name, pos_x, pos_y) {
         "middleware": (x,y)=> addMiddleware(x,y),
         "collection": (x,y)=> addScheme(x,y),
         "prop": (x,y)=> addProp(x,y),
+        "setQuery": (x,y)=> setQuery(x,y),
+        "sendView": (x,y)=> setQuery(x,y)
     }
     
     if(!Object.keys(nodeTypes).includes(name)) {
@@ -243,6 +245,32 @@ function addExpress(x,y) {
 editor.addNode('express', 0, 1, x, y, 'express', data, express);
 }
 
+function setQuery(x,y) {
+    let data = { "key": "", "value": "" };
+    let express = `
+<div class="card m-0" style="width: 18rem;">
+  <div class="card-header">
+    @Set Query Param
+  </div>
+  <div class="card-body">
+    <div class="row">
+        <div class="col">
+            <label for="queryKey" class="form-control-label">Key</label>
+            <input class="form-control" id="queryKey" name="queryKey" type="text" df-key>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="queryValue" class="form-control-label">Value</label>
+            <input class="form-control" id="queryValue" name="queryValue" type="text" df-value>
+        </div>
+    </div>
+  </div>
+</div>
+`.trim().split('\n').join('').split('\t').join('');
+editor.addNode('setter', 1, 0, x, y, 'setter', data, express);
+}
+
 function addController(x,y, name="x11"){
     let data = { "func": 'findAll', "name": name };
 
@@ -267,7 +295,6 @@ function addController(x,y, name="x11"){
       </div>
     </div>
     `.trim().split('\n').join('').split('\t').join('');
-    //<option value="dropCollection">Delete Many</option>
 
     editor.addNode('controller', 1, 1, x, y, 'controller', data, controller);
 }

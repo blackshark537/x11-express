@@ -7,9 +7,9 @@ export interface x11Model{
 
 //  INTERFACES
 export type KeyValue = { [name: string]: any }
-export type KeyNode = { [name: string]: Node };
+export type KeyNode = { [name: string]: iNode };
 
-export interface Node{
+export interface iNode{
     id: number;
     name: string;
     class: string;

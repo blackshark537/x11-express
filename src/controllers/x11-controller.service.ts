@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { Crypto } from '../services'
 import { ModelModule } from '../models'
-import { HttpCode, iQuery, KeyNode, KeyValue, Node, PropTypes } from '../interfaces/x11.interface';
+import { HttpCode, iQuery, KeyNode, KeyValue, iNode, PropTypes } from '../interfaces/x11.interface';
 import * as fs from 'fs';
 
 const Models = ModelModule;
@@ -30,7 +30,7 @@ export class x11Controller{
         try {
             const query: iQuery | any = req.query;
             const module: KeyNode = this.appConfig[query['module']].data;
-            const collectionNode: Node = module[query['collection']];
+            const collectionNode: iNode = module[query['collection']];
             const collection: string = collectionNode.data.schema;
 
             const _Models: KeyValue = Models;
@@ -58,7 +58,7 @@ export class x11Controller{
         try {
             const query: iQuery | any = req.query;
             const module: KeyNode = this.appConfig[query['module']].data;
-            const collectionNode: Node = module[query['collection']];
+            const collectionNode: iNode = module[query['collection']];
             const collection: string = collectionNode.data.schema;
 
             const _Models: KeyValue = Models;
@@ -87,7 +87,7 @@ export class x11Controller{
 
             const query: iQuery | any = req.query;
             const module: KeyNode = this.appConfig[query['module']].data;
-            const collectionNode: Node = module[query['collection']];
+            const collectionNode: iNode = module[query['collection']];
             const collection: string = collectionNode.data.schema;
 
             const _Models: KeyValue = Models;
@@ -98,7 +98,7 @@ export class x11Controller{
             const prop_nodes: string[] = collectionNode.outputs['output_1'].connections.map(el=> el.node);
             
             prop_nodes.forEach(node=>{
-                const propNode: Node = module[node];
+                const propNode: iNode = module[node];
                 const data_node: KeyValue = propNode.data;
                 this.checkType(data_node, body);
                 data[data_node['name']] = this.format(data_node, body);
@@ -119,7 +119,7 @@ export class x11Controller{
         try {
             const query: iQuery | any = req.query;
             const module: KeyNode = this.appConfig[query['module']].data;
-            const collectionNode: Node = module[query['collection']];
+            const collectionNode: iNode = module[query['collection']];
             const collection = collectionNode.data.schema;
 
             const _Models: KeyValue = Models;
@@ -136,7 +136,7 @@ export class x11Controller{
         try {
             const query: iQuery | any = req.query;
             const module: KeyNode = this.appConfig[query['module']].data;
-            const collectionNode: Node = module[query['collection']];
+            const collectionNode: iNode = module[query['collection']];
             const collection = collectionNode.data.schema;
 
             const _Models: KeyValue = Models;
@@ -152,7 +152,7 @@ export class x11Controller{
         try {
             const query: iQuery | any = req.query;
             const module: KeyNode = this.appConfig[query['module']].data;
-            const collectionNode: Node = module[query['collection']];
+            const collectionNode: iNode = module[query['collection']];
             const collection = collectionNode.data.schema;
 
             const _Models: KeyValue = Models;
