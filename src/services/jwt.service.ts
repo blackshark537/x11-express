@@ -27,7 +27,7 @@ export class Jwt {
 
     decode(token: string): string | JwtPayload{
         try{
-            return verify(token, this.secret);
+            return verify(token? token : '', this.secret);
         } catch(error){
             throw new Error(`Jwt Signing Error: ${error}`);
         }
