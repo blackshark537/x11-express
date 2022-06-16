@@ -1,10 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
-import { Crypto } from '../services'
-import { ModelModule } from '../models'
-import { HttpCode, iQuery, KeyNode, KeyValue, iNode, PropTypes } from '../interfaces/x11.interface';
-import * as fs from 'fs';
+import { Crypto, fs } from '../services'
+import { x11ModelsModule } from '../models'
 
-const Models = ModelModule;
+import { 
+    HttpCode, 
+    iQuery, 
+    KeyNode, 
+    KeyValue, 
+    iNode, 
+    PropTypes 
+} from '../interfaces/x11.interface';
+
+const Models = x11ModelsModule;
 
 export class x11Controller{
     
@@ -14,7 +21,7 @@ export class x11Controller{
     private constructor(){
         //  LOAD APP CONFIG
         try {
-            const file = fs.readFileSync('./app-config.json', { encoding: 'utf-8'});
+            const file = fs.read('./app-config.json');
             this.appConfig = JSON.parse(file);
         } catch (error) {
             throw new Error(error as string);
@@ -33,8 +40,6 @@ export class x11Controller{
             const collectionNode: iNode = module[query['collection']];
             const collection: string = collectionNode.data.schema;
 
-            const _Models: KeyValue = Models;
-            
             //  CONDITIONAL FILTERING
             const _filter: KeyValue = {}
             const { filter,cond, value } = query;
@@ -43,7 +48,7 @@ export class x11Controller{
                 _filter[filter][cond] = value.includes(".")? parseFloat(value) : parseInt(value);
             }
             
-            const resp = await _Models[collection].find()
+            const resp = await Models[collection].find()
             .where(query? {...query.filters, ..._filter } : {});
             res.json([
                ...resp
@@ -61,8 +66,6 @@ export class x11Controller{
             const collectionNode: iNode = module[query['collection']];
             const collection: string = collectionNode.data.schema;
 
-            const _Models: KeyValue = Models;
-
             //  CONDITIONAL FILTERING
             const _filter: KeyValue = {}
             const { filter,cond, value } = query;
@@ -71,7 +74,7 @@ export class x11Controller{
                 _filter[filter][cond] = value.includes(".")? parseFloat(value) : parseInt(value);
             }
 
-            const resp = await _Models[collection].findOne({_id: req.params.id})
+            const resp = await Models[collection].findOne({_id: req.params.id})
             .where(query? {...query, ..._filter} : {});
             res.json(
                 resp
@@ -89,8 +92,6 @@ export class x11Controller{
             const module: KeyNode = this.appConfig[query['module']].data;
             const collectionNode: iNode = module[query['collection']];
             const collection: string = collectionNode.data.schema;
-
-            const _Models: KeyValue = Models;
             
             const body: KeyValue = req.body;
             const data: KeyValue = {};
@@ -104,7 +105,7 @@ export class x11Controller{
                 data[data_node['name']] = this.format(data_node, body);
             });
             
-            const newModel = new _Models[collection]({
+            const newModel = new Models[collection]({
                 data: data
             });
             const result = await newModel.save();
@@ -122,10 +123,8 @@ export class x11Controller{
             const collectionNode: iNode = module[query['collection']];
             const collection = collectionNode.data.schema;
 
-            const _Models: KeyValue = Models;
-
             req.body.updatedAt = new Date();
-            const result = await _Models[collection].findOneAndUpdate({_id: req.params.id}, req.body);
+            const result = await Models[collection].findOneAndUpdate({_id: req.params.id}, req.body);
             res.json({result});
         } catch (error) {
             this.showError(res, error);
@@ -139,9 +138,7 @@ export class x11Controller{
             const collectionNode: iNode = module[query['collection']];
             const collection = collectionNode.data.schema;
 
-            const _Models: KeyValue = Models;
-
-            const result = await _Models[collection].findOneAndDelete({_id: req.params.id});
+            const result = await Models[collection].findOneAndDelete({_id: req.params.id});
             res.json({result});
         } catch (error) {
             this.showError(res, error);
@@ -155,9 +152,7 @@ export class x11Controller{
             const collectionNode: iNode = module[query['collection']];
             const collection = collectionNode.data.schema;
 
-            const _Models: KeyValue = Models;
-
-            const result = await _Models[collection].deleteMany({...query});
+            const result = await Models[collection].deleteMany({...query});
             res.json(result);
         } catch (error) {
             this.showError(res, error);

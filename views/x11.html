@@ -37,23 +37,21 @@
             <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="express">
                 <i class="fa-brands fa-node-js"></i><span> Express</span>
             </div>
-            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="setQuery">
-                <i class="fa-solid fa-question"></i><span> Set Query</span>
+            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="sendFile">
+                <i class="fa-solid fa-file"></i><span> Send File</span>
             </div>
-            <!-- <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="sendView">
-                <i class="fa-solid fa-eye"></i><span> Send View</span>
-            </div> -->
             <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="controller">
                 <i class="fa-solid fa-gear"></i><span> Controller</span>
             </div>
             <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="prop">
                 <i class="fa-solid fa-atom"></i><span> Prop</span>
             </div>
+            <!-- X11 COLLECTIONS -->
             <div class="accordion" id="accordionCollection">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                             <span class="ml-1"> Collections List</span>
+                             <span class="ml-1">X11 Collections</span>
                         </button>
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionCollection">
@@ -71,12 +69,45 @@
                 </div>
             </div>
 
+            <!-- CUSTOM COLLECTIONS -->
+            <div class="accordion" id="accordionCustomCollections">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCustomCollections" aria-expanded="true" aria-controls="collapseCustomCollections">
+                             <span class="ml-1">Custom Collections</span>
+                        </button>
+                    </h2>
+                    <div id="collapseCustomCollections" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionCollection">
+                        <div id="customCollections" class="accordion-body">
+                            <ul id="customCollectionList" class="list-group">
+                            </ul>
+                        </div>
+                    </div> 
+                </div>
+            </div>
+            <!-- CUSTOM CONTROLLERS -->
+            <!-- <div class="accordion" id="accordionCustomControllers">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCustomControllers" aria-expanded="true" aria-controls="collapseCustomControllers">
+                             <span class="ml-1">Custom Controllers</span>
+                        </button>
+                    </h2>
+                    <div id="collapseCustomControllers" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionControllers">
+                        <div id="customControllers" class="accordion-body">
+                            <ul id="customControllerList" class="list-group">
+                            </ul>
+                        </div>
+                    </div> 
+                </div>
+            </div> -->
 
+            <!-- CUSTOM MIDDLEWARES -->
             <div class="accordion" id="accordionMiddleware">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingOne">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMiddlewares" aria-expanded="true" aria-controls="collapseOne">
-                            <span>Middlewares List</span>
+                            <span>Custom Middlewares</span>
                         </button>
                     </h2>
                     <div id="collapseMiddlewares" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionMiddleware">

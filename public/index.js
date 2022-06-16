@@ -8,6 +8,7 @@ editor.start();
 
 // INIT
 listCollections();
+listCollections("custom");
 listMiddlewares();
 _import();
 
@@ -89,14 +90,14 @@ async function listMiddlewares(){
     middlewareList.middlewares.forEach(_middleware=>{
         const middleware = document.getElementById("middleware-name");
         middleware.value = _middleware;
-        list.innerHTML += `<li class="list-group-item" ><div draggable="true" ondragstart="drag(event)" data-node="${_middleware}-middleware">
+        list.innerHTML += `<li class="list-group-item" ><div draggable="true" ondragstart="drag(event)" data-node="${_middleware}-custom-middleware">
         <i class="fa-solid fa-filter mr-1"></i> <span>${_middleware.toLowerCase()}</span>
     </div></li>`;
     })
 }
 
-async function getCollections(){
-    let resp = await fetch("/collections",{
+async function getCollections(type="x11"){
+    let resp = await fetch(`/collections?type=${type}`,{
         method: "GET"
     }).catch(error=> console.error(error));
     resp = resp.json();
@@ -118,15 +119,14 @@ async function createCollection(collection){
     return resp.json();
 }
 
-async function listCollections(){
-    const collectionList = await getCollections();
-    console.log({collectionList})
-    const list = document.getElementById('collectionList');
+async function listCollections(type="x11"){
+    const collectionList = await getCollections(type);
+    const list = type==='x11'? document.getElementById('collectionList') : document.getElementById('customCollectionList');
     
     collectionList.collections.forEach(_collection=>{
         const collection = document.getElementById("collection-name");
         collection.value = _collection;
-        list.innerHTML += `<li class="list-group-item" ><div class="" draggable="true" ondragstart="drag(event)" data-node="${_collection}-schema">
+        list.innerHTML += `<li class="list-group-item" ><div class="" draggable="true" ondragstart="drag(event)" data-node="${_collection}-${type}-schema">
         <i class="fa-solid fa-database mr-1"></i> <span>${_collection}</span>
     </div></li>`;
     })
@@ -175,13 +175,13 @@ function addNodeToDrawFlow(name, pos_x, pos_y) {
         "middleware": (x,y)=> addMiddleware(x,y),
         "collection": (x,y)=> addScheme(x,y),
         "prop": (x,y)=> addProp(x,y),
-        "setQuery": (x,y)=> setQuery(x,y),
-        "sendView": (x,y)=> setQuery(x,y)
+        "sendFile": (x,y)=> sendFile(x,y)
     }
     
     if(!Object.keys(nodeTypes).includes(name)) {
-        if(name.includes("schema")) addScheme(pos_x, pos_y, name.split("-")[0]);
-        if(name.includes("middleware")) addMiddleware(pos_x, pos_y, name.split("-")[0]);
+        if(name.includes("custom-schema")) addCustomScheme(pos_x, pos_y, name.split("-")[0]);
+        if(name.includes("x11-schema")) addScheme(pos_x, pos_y, name.split("-")[0]);
+        if(name.includes("custom-middleware")) addMiddleware(pos_x, pos_y, name.split("-")[0]);
         return;
     }
     nodeTypes[name](pos_x, pos_y);
@@ -189,7 +189,7 @@ function addNodeToDrawFlow(name, pos_x, pos_y) {
 
 //  NODES TYPES DEFINITION
 function addApp(x,y){
-    const data = { "port": 3000, "database": "x11"};
+    const data = { "port": 3000, "database": "x11", "usecors": ""};
     const app = `<div class="card m-0" style="width: 18rem;">
   <div class="card-header">
     @App Configuration
@@ -197,14 +197,22 @@ function addApp(x,y){
   <div class="card-body">
     <div class="row">
         <div class="col">
-            <label for="port" class="form-label">App Port</label>
+            <label for="port" class="form-label">App Port:</label>
             <input class="form-control" id="port" name="port" placeholder="App Port ie: 3000 " type="number" df-port>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <label for="uri" class="form-label">Database Name</label>
+            <label for="uri" class="form-label">Database Name:</label>
             <input class="form-control" id="uri" name="uri" type="text" placeholder="Database" df-database>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="cors" class="form-label">Use Cors:</label>
+            <select class="form-select form-select-sm" aria-label="cors" df-useCors>
+            <option selected value="no">No</option>
+            <option value="yes">Yes</option>
         </div>
     </div>
   </div>
@@ -214,7 +222,7 @@ editor.addNode('app', 0, 0, x, y, 'app', data, app);
 }
 
 function addExpress(x,y) {
-    let data = { "route": "/", "method": "get" };
+    let data = { "route": "/", "method": "get", "access": "public" };
     let express = `
 <div class="card m-0" style="width: 18rem;">
   <div class="card-header">
@@ -223,13 +231,13 @@ function addExpress(x,y) {
   <div class="card-body">
     <div class="row">
         <div class="col">
-            <label for="route" class="form-label">Route</label>
+            <label for="route" class="form-label">Route:</label>
             <input class="form-control" id="route" name="route" type="text" df-route>
         </div>
     </div>
     <div class="row">
         <div class="col">
-            <label for="Request" class="form-label">Request</label>
+            <label for="Request" class="form-label">Request:</label>
             <select class="form-select form-select-sm" aria-label="Request" df-method>
             <option selected value="get">GET</option>
             <option value="post">POST</option>
@@ -245,30 +253,24 @@ function addExpress(x,y) {
 editor.addNode('express', 0, 1, x, y, 'express', data, express);
 }
 
-function setQuery(x,y) {
-    let data = { "key": "", "value": "" };
+function sendFile(x,y) {
+    let data = { "path": "", "type": "x11", "name": "sendFile" };
     let express = `
 <div class="card m-0" style="width: 18rem;">
   <div class="card-header">
-    @Set Query Param
+    @Send File
   </div>
   <div class="card-body">
     <div class="row">
         <div class="col">
-            <label for="queryKey" class="form-control-label">Key</label>
-            <input class="form-control" id="queryKey" name="queryKey" type="text" df-key>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <label for="queryValue" class="form-control-label">Value</label>
-            <input class="form-control" id="queryValue" name="queryValue" type="text" df-value>
+            <label for="filename" class="form-control-label">Path</label>
+            <input class="form-control" id="filename" name="filename" type="text" df-path>
         </div>
     </div>
   </div>
 </div>
 `.trim().split('\n').join('').split('\t').join('');
-editor.addNode('setter', 1, 0, x, y, 'setter', data, express);
+editor.addNode('x11-Mid', 1, 0, x, y, 'x11-Mid', data, express);
 }
 
 function addController(x,y, name="x11"){
@@ -303,16 +305,16 @@ async function addMiddleware(x,y, name){
     const middlewareName = name? name : document.getElementById("middleware-name").value;
     await createMiddleware(middlewareName);
 
-    let data = { "code": "", "name": "" };
+    let data = { "name": "", "type": "custom" };
     data["code"] = vscode.value;
     data["name"] = middlewareName;
 
     let middleware = `
     <div class="card m-0" style="width: 18rem;">
       <div class="card-header">
-        @Middleware
+        @Custom Middleware
         <button class="btn btn-dark" onclick="editMiddleware('${middlewareName}')">
-        <i class="fa-solid fa-pen"></i>
+        <i class="fa-solid fa-eye"></i>
         </button>
       </div>
       <div class="card-body">
@@ -325,31 +327,54 @@ async function addMiddleware(x,y, name){
       </div>
     </div>
     `.trim().split('\n').join('').split('\t').join('');
-    editor.addNode('middleware', 1, 0, x, y, 'middleware', data, middleware);
+    editor.addNode('middleware', 1, 1, x, y, 'middleware', data, middleware);
 }
 
-async function addScheme(x, y, name){
+async function addCustomScheme(x, y, name){
     const collection = name? name : document.getElementById("collection-name").value;
-    await createCollection(collection);
 
-    let data = { "schema": `${collection}` }
+    let data = { "schema": `${collection}`, "type": "custom" }
     const schema = `
 <div class="card m-0" style="width: 18rem;">
   <div class="card-header">
-    @Collection
+    @x11-Collection
   </div>
   <div class="card-body">
     <div class="row">
         <div class="col">
             <label for="schema" class="form-label">Collection Name</label>
             <h5>${collection} </h5>
-            <p class="schema-data">Data</p>
+            <p class="schema-data">Props</p>
         </div>
     </div>
   </div>
 </div>
 `.trim().split('\n').join('').split('\t').join('');
-editor.addNode('schema', 1, 1, x, y, 'schema', data, schema);
+editor.addNode('schema', 1, 0, x, y, 'schema', data, schema);
+}
+
+async function addScheme(x, y, name){
+    const collection = name? name : document.getElementById("collection-name").value;
+    await createCollection(collection);
+
+    let data = { "schema": `${collection}`, "type": "x11" }
+    const schema = `
+<div class="card m-0" style="width: 18rem;">
+  <div class="card-header">
+    @x11-Collection
+  </div>
+  <div class="card-body">
+    <div class="row">
+        <div class="col">
+            <label for="schema" class="form-label">Collection Name</label>
+            <h5>${collection} </h5>
+            <p class="schema-data">Props</p>
+        </div>
+    </div>
+  </div>
+</div>
+`.trim().split('\n').join('').split('\t').join('');
+editor.addNode('x11-schema', 1, 1, x, y, 'x11-schema', data, schema);
 }
 
 function addProp(x,y){

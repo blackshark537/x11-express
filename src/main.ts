@@ -10,7 +10,7 @@ import  expressWinston   from 'express-winston';
 import 'dotenv/config'
 
 import  express         from 'express';
-import { iNode }        from './interfaces/';
+import { iNode }        from './core/interfaces';
 import { connect }      from 'mongoose';
 import { AppRoutes }    from './routes';
 import { CoreService }  from './core';
@@ -25,9 +25,6 @@ app.use(express.json());
 
 // STATIC FILES FOLDER
 app.use(express.static('public'));
-
-// CORS PERMITION
-app.use(cors());
 
 // LOGGIN MIDDLEWARE
 const loggerOptions: expressWinston.LoggerOptions = {
@@ -59,9 +56,16 @@ try {
     const AppConfig = (Object.values(dfSchema['Home']['data']) as iNode[]).find(el=> el.name === 'app');
 
     if (AppConfig?.data) { 
+        // CORS PERMITION
+        if(AppConfig.data['usecors'] === 'yes'){ 
+            app.use(cors());
+            console.log("app is using cors()");
+        }
+
         let envFile = fs.readFileSync('.env', {encoding: 'utf-8'});
         envFile = envFile.replace(/PORT=\d[0-9]{3}/g, `PORT=${AppConfig?.data['port']}`);
         envFile = envFile.replace(/DB=\w+/, `DB=${AppConfig?.data['database']}`);
+        
         fs.writeFileSync(".env", envFile, {encoding: 'utf-8'});
 
         app.set("port", process.env.PORT || 4200);
@@ -83,7 +87,9 @@ connect(`mongodb://localhost:27017/${app.get("db")}`, (error)=>{
     
     console.log('MongoDB conected...');
 
-    const runningMessage = `Server running at http://localhost:${app.get("port")}`;
+    const runningMessage = `
+    Server running at http://localhost:${app.get("port")}
+    To start please editing visit http://localhost:${app.get("port")}/x11`;
     
     debugLog(`${runningMessage}`);
 

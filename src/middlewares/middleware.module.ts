@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import { Crypto } from '../services/ncrypt.service';
-import { Jwt } from '../services/jwt.service';
-import { fs } from '../services/file-system.service';
-import { HttpCode } from '../interfaces/';
+import { KeyValue } from "../core/interfaces";
 
-export const MiddlewareModule = { 
-
+export const CustomMiddlewaresModule: KeyValue = { 
+    "helloworld": (req: Request, res: Response, next: NextFunction)=>{
+        console.log("Hello World!", req.query);
+        next();
+    },
 }

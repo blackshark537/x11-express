@@ -9,6 +9,10 @@ export interface x11Model{
 export type KeyValue = { [name: string]: any }
 export type KeyNode = { [name: string]: iNode };
 
+export type KeyConnection = {
+    [name: string]: Connection[]
+}
+
 export interface iNode{
     id: number;
     name: string;
@@ -21,10 +25,6 @@ export interface iNode{
     inputs: {
         [name: string]: KeyConnection
     }
-}
-
-interface KeyConnection{
-    [name: string]: Connection[]
 }
 
 interface Connection{
@@ -48,8 +48,11 @@ export enum PropTypes{
 
 export enum HttpCode{
     SUCCESS=200,
-    CONFLICT=409,
+    BAD_REQUEST=400,
+    UNAUTHORIZED=401,
+    PAYMENT_REQUIRED=402,
     FORBIDDEN=403,
-    NOTFOUND=404,
+    NOT_FOUND=404,
+    CONFLICT=409,
     SERVER_ERROR=500,
 }

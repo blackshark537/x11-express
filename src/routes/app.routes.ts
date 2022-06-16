@@ -5,9 +5,11 @@ import  express, {
     Response, 
     NextFunction
 } from 'express';
-import { HttpCode } from '../interfaces/';
-import { ModelModule } from '../models/x11.model';
-import { MiddlewareModule } from '../middlewares';
+import { HttpCode } from '../core/interfaces';
+import { x11ModelsModule } from '../core/models';
+
+import { CustomModelsModule } from '../models';
+import { CustomMiddlewaresModule } from '../middlewares';
 
 const configPath = './app-config.json';
 
@@ -43,7 +45,7 @@ export class AppRoutes{
 
         // MIDDLEWARES MODULES
         this.app.route('/middlewares').get((req: Request, res: Response, next: NextFunction)=>{
-            const middlewares = Object.keys(MiddlewareModule);
+            const middlewares = Object.keys(CustomMiddlewaresModule);
             res.json({middlewares});
         });
 
@@ -96,8 +98,15 @@ export class AppRoutes{
 
         // COLLECTIONS MODULES
         this.app.route('/collections').get((req: Request, res: Response, next: NextFunction)=>{
-            const collections = Object.keys(ModelModule);
-            res.json({collections});
+            const type = req.query.type;
+            if(type=== 'x11'){
+                const collections = Object.keys(x11ModelsModule);
+                res.json({collections});
+            } else {
+                const collections = Object.keys(CustomModelsModule);
+                res.json({collections});
+            }
+            
         });
 
         this.app.route('/collections/new').post((req: Request, res: Response, next: NextFunction)=>{
