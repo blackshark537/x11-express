@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { Crypto, fs } from '../services'
 import { x11ModelsModule } from '../models'
+import { CustomModelsModule } from '../../models';
 
 import { 
     HttpCode, 
@@ -39,6 +40,9 @@ export class x11Controller{
             const module: KeyNode = this.appConfig[query['module']].data;
             const collectionNode: iNode = module[query['collection']];
             const collection: string = collectionNode.data.schema;
+            const type: string = collectionNode.data.type;
+
+            const _Model = type === 'x11'? Models : CustomModelsModule; 
 
             //  CONDITIONAL FILTERING
             const _filter: KeyValue = {}
@@ -48,7 +52,7 @@ export class x11Controller{
                 _filter[filter][cond] = value.includes(".")? parseFloat(value) : parseInt(value);
             }
             
-            const resp = await Models[collection].find()
+            const resp = await _Model[collection].find()
             .where(query? {...query.filters, ..._filter } : {});
             res.json([
                ...resp
@@ -65,6 +69,9 @@ export class x11Controller{
             const module: KeyNode = this.appConfig[query['module']].data;
             const collectionNode: iNode = module[query['collection']];
             const collection: string = collectionNode.data.schema;
+            const type: string = collectionNode.data.type;
+
+            const _Model = type === 'x11'? Models : CustomModelsModule; 
 
             //  CONDITIONAL FILTERING
             const _filter: KeyValue = {}
@@ -74,7 +81,7 @@ export class x11Controller{
                 _filter[filter][cond] = value.includes(".")? parseFloat(value) : parseInt(value);
             }
 
-            const resp = await Models[collection].findOne({_id: req.params.id})
+            const resp = await _Model[collection].findOne({_id: req.params.id})
             .where(query? {...query, ..._filter} : {});
             res.json(
                 resp
@@ -92,25 +99,32 @@ export class x11Controller{
             const module: KeyNode = this.appConfig[query['module']].data;
             const collectionNode: iNode = module[query['collection']];
             const collection: string = collectionNode.data.schema;
+            const type: string = collectionNode.data.type;
             
-            const body: KeyValue = req.body;
-            const data: KeyValue = {};
+            if(type === 'x11'){
+                const body: KeyValue = req.body;
+                const data: KeyValue = {};
 
-            const prop_nodes: string[] = collectionNode.outputs['output_1'].connections.map(el=> el.node);
-            
-            prop_nodes.forEach(node=>{
-                const propNode: iNode = module[node];
-                const data_node: KeyValue = propNode.data;
-                this.checkType(data_node, body);
-                data[data_node['name']] = this.format(data_node, body);
-            });
-            
-            const newModel = new Models[collection]({
-                data: data
-            });
-            const result = await newModel.save();
-            res.json(result);
-    
+                const prop_nodes: string[] = collectionNode.outputs['output_1'].connections.map(el=> el.node);
+                
+                prop_nodes.forEach(node=>{
+                    const propNode: iNode = module[node];
+                    const data_node: KeyValue = propNode.data;
+                    this.checkType(data_node, body);
+                    data[data_node['name']] = this.format(data_node, body);
+                });
+                const newModel = new Models[collection]({
+                    data: data
+                });
+                const result = await newModel.save();
+                res.json(result);
+            } else {
+                const newModel = new CustomModelsModule[collection]({
+                    ...req.body
+                });
+                const result = await newModel.save();
+                res.json(result);
+            }
         } catch (error) {
             this.showError(res, error);
         }
@@ -122,9 +136,12 @@ export class x11Controller{
             const module: KeyNode = this.appConfig[query['module']].data;
             const collectionNode: iNode = module[query['collection']];
             const collection = collectionNode.data.schema;
+            const type: string = collectionNode.data.type;
+
+            const _Model = type === 'x11'? Models : CustomModelsModule; 
 
             req.body.updatedAt = new Date();
-            const result = await Models[collection].findOneAndUpdate({_id: req.params.id}, req.body);
+            const result = await _Model[collection].findOneAndUpdate({_id: req.params.id}, req.body);
             res.json({result});
         } catch (error) {
             this.showError(res, error);
@@ -137,8 +154,11 @@ export class x11Controller{
             const module: KeyNode = this.appConfig[query['module']].data;
             const collectionNode: iNode = module[query['collection']];
             const collection = collectionNode.data.schema;
+            const type: string = collectionNode.data.type;
 
-            const result = await Models[collection].findOneAndDelete({_id: req.params.id});
+            const _Model = type === 'x11'? Models : CustomModelsModule; 
+
+            const result = await _Model[collection].findOneAndDelete({_id: req.params.id});
             res.json({result});
         } catch (error) {
             this.showError(res, error);
@@ -151,8 +171,11 @@ export class x11Controller{
             const module: KeyNode = this.appConfig[query['module']].data;
             const collectionNode: iNode = module[query['collection']];
             const collection = collectionNode.data.schema;
+            const type: string = collectionNode.data.type;
 
-            const result = await Models[collection].deleteMany({...query});
+            const _Model = type === 'x11'? Models : CustomModelsModule; 
+
+            const result = await _Model[collection].deleteMany({...query});
             res.json(result);
         } catch (error) {
             this.showError(res, error);

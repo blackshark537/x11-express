@@ -344,7 +344,6 @@ async function addCustomScheme(x, y, name){
         <div class="col">
             <label for="schema" class="form-label">Collection Name</label>
             <h5>${collection} </h5>
-            <p class="schema-data">Props</p>
         </div>
     </div>
   </div>
