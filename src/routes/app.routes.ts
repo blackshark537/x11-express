@@ -65,37 +65,6 @@ export class AppRoutes{
             }
         });
 
-        /* this.app.route('/middleware/code/:key').patch((req: Request, res: Response, next: NextFunction)=>{
-            const newFile = await this.updateCode(file, req.params.key, req.body.code);
-            console.log("new: ", middleware);
-            fs.writeFileSync(path, newFile, { encoding: 'utf-8'});
-            res.json({middleware, msg: 'Patched!' });
-            res.end();
-        }); */
-
-        this.app.route('/middlewares/new').post(async (req: Request, res: Response, next: NextFunction)=>{
-            try {
-                const middleware = req.body.name;
-                const code = req.body.code;
-                const path = process.env.PRODUCTION? "./dist/middlewares/middleware.module.js" : "./src/middlewares/middleware.module.ts";
-
-                const file = fs.readFileSync(path, {encoding: 'utf-8'});
-
-                if(file.includes(middleware)){ 
-                    res.status(HttpCode.CONFLICT).json({msg: "Middleware already exist."});
-                    return;
-                } else {
-                    const strs = file.split("= {");
-                    const newFile = [strs[0], `= { \n"${middleware}" : ${code},`, strs[1]].join("");
-                    fs.writeFileSync(path, newFile, {encoding: 'utf-8'});
-                    res.json({middleware, msg: "Created!"});
-                }
-
-            } catch (error) {
-                this.showError(res, error);
-            }
-        });
-
         // COLLECTIONS MODULES
         this.app.route('/collections').get((req: Request, res: Response, next: NextFunction)=>{
             const type = req.query.type;
@@ -140,10 +109,4 @@ export class AppRoutes{
         });
     }
 
-/*     private async updateCode(file: string, key: string, code: string): Promise<string>{
-        const div1 = file.split(`"${key}" : `);
-        const div2 = div1[1].split('},');
-        const newFile =  [div1[0], `\n"${key}" : ${code},`, div2[1]].join("");
-        return newFile;
-    } */
 }

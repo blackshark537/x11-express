@@ -24,6 +24,7 @@ export class CoreService{
             const file = fs.readFileSync(path, {encoding: 'utf-8'});
             const dfSchema = JSON.parse(file);
             const modules: string[] = Object.keys(dfSchema);
+            
             modules.forEach(module=>{
                 const nodes: iNode[] = Object.values(dfSchema[module].data);
                 nodes.forEach(node=>{
@@ -35,15 +36,16 @@ export class CoreService{
                         const childs: string[] = node.outputs['output_1']['connections'].map(el=> el.node);
                         const controllerNode: iNode = childs.map(child=> dfSchema[module]['data'][child]).find(_node=> _node.class === 'controller');
                         const middlewareNode: iNode = childs.map(child=> dfSchema[module]['data'][child]).find(_node=> _node.class === 'middleware');
-                        const x11MidNode: iNode = childs.map(child=> dfSchema[module]['data'][child]).find(_node=> _node.class === 'x11-Mid');
+                        const x11MiddlewareNode: iNode = childs.map(child=> dfSchema[module]['data'][child]).find(_node=> _node.class === 'x11-Mid');
                         const middlewareNodes: iNode[] = [];
 
-                        if(middlewareNode || x11MidNode ){
+                        //BFS
+                        if(middlewareNode || x11MiddlewareNode ){
                         
                             let queue = [];
 
                             if(middlewareNode) queue.push(middlewareNode.id);
-                            if(x11MidNode) queue.push(x11MidNode.id);
+                            if(x11MiddlewareNode) queue.push(x11MiddlewareNode.id);
 
                             const visited = new Set();
 
@@ -77,7 +79,7 @@ export class CoreService{
                                         
                                     });
                                 } catch (error) {
-                                    console.error(error);
+                                    throw new Error(`${error}`);
                                 }
                             })
                         }
