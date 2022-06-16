@@ -189,7 +189,7 @@ function addNodeToDrawFlow(name, pos_x, pos_y) {
 
 //  NODES TYPES DEFINITION
 function addApp(x,y){
-    const data = { "port": 3000, "database": "x11", "usecors": ""};
+    const data = { "port": 3000, "database": "x11", "usecors": "no"};
     const app = `<div class="card m-0" style="width: 18rem;">
   <div class="card-header">
     @App Configuration

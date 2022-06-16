@@ -1,6 +1,6 @@
 # X11-Express ( @Experimental )
 
-![Demo](https://github.com/blackshark537/x11-express/raw/master/public/demo.png)
+![Demo](https://github.com/blackshark537/x11-express/raw/master/public/x11/imgs/demo.png)
 
 Simple flow dynamic nodejs framework.
 
