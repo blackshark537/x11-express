@@ -65,6 +65,29 @@ export class AppRoutes{
             }
         });
 
+        this.app.route('/middlewares/new').post(async (req: Request, res: Response, next: NextFunction)=>{
+            try {
+                const middleware = req.body.name;
+                const code = req.body.code;
+                const path = process.env.PRODUCTION? "./dist/middlewares/middleware.module.js" : "./src/middlewares/middleware.module.ts";
+
+                const file = fs.readFileSync(path, {encoding: 'utf-8'});
+
+                if(file.includes(middleware)){ 
+                    res.status(HttpCode.CONFLICT).json({msg: "Middleware already exist."});
+                    return;
+                } else {
+                    const strs = file.split("= {");
+                    const newFile = [strs[0], `= { \n"${middleware}" : ${code},`, strs[1]].join("");
+                    fs.writeFileSync(path, newFile, {encoding: 'utf-8'});
+                    res.json({middleware, msg: "Created!"});
+                }
+
+            } catch (error) {
+                this.showError(res, error);
+            }
+        });
+
         // COLLECTIONS MODULES
         this.app.route('/collections').get((req: Request, res: Response, next: NextFunction)=>{
             const type = req.query.type;
@@ -80,7 +103,7 @@ export class AppRoutes{
 
         this.app.route('/collections/new').post((req: Request, res: Response, next: NextFunction)=>{
             try {
-                const path = process.env.PRODUCTION? './dist/models/x11.model.js' : './src/models/x11.model.ts';
+                const path = process.env.PRODUCTION? './dist/core/models/x11Models.module.js' : './src/core/models/x11Models.module.ts';
                 const collection = req.body.collection;
                 const file = fs.readFileSync(path, {encoding: 'utf-8'});
                 
