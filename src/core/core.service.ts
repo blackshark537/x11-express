@@ -60,14 +60,20 @@ export class CoreService{
                             }
                         }
 
+                        //let middlewareFunctions: Function[] = [];
+
                         if(middlewareNodes.length){
 
                             middlewareNodes.map(middlewareNode=>{
                                 try {
-                                    const name = middlewareNode.data.name;
                                     const path = middlewareNode.data.path;
+                                    const name = middlewareNode.data.name;
                                     const type = middlewareNode.data.type;
-                                    
+                                    /* if(type==='custom'){
+                                        middlewareFunctions.push(CustomMiddlewaresModule[name]);
+                                    } else {
+                                        middlewareFunctions.push(x11MiddlewareModule[name]);
+                                    } */
                                     _app[method](route, (req: Request, res: Response, next: NextFunction)=>{
                                         
                                         if(type==='custom'){
@@ -83,12 +89,12 @@ export class CoreService{
                                 }
                             })
                         }
-        
+                        
                         if(controllerNode){
                             try {
                                 const collections: string[] = controllerNode.outputs['output_1']['connections'].map(el=> el.node);
                                 
-                                (_app[method])(route, (req: Request, res: Response, next: NextFunction)=>{
+                                (_app[method])(route ,(req: Request, res: Response, next: NextFunction)=>{
                                     try {
 
                                         const name = controllerNode.data.name;

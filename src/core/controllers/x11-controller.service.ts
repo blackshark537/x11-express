@@ -41,17 +41,20 @@ export class x11Controller{
             const collectionNode: iNode = module[query['collection']];
             const collection: string = collectionNode.data.schema;
             const type: string = collectionNode.data.type;
-
             const _Model = type === 'x11'? Models : CustomModelsModule; 
 
             //  CONDITIONAL FILTERING
             const _filter: KeyValue = {}
-            const { filter,cond, value } = query;
+            const { filter, cond, value } = query;
             if( filter ){
                 _filter[filter] = {};
-                _filter[filter][cond] = value.includes(".")? parseFloat(value) : parseInt(value);
+                if(value.includes('true') || value.includes('false')){
+                    _filter[filter][cond] = value.includes('true')? true : false;
+                } else {
+                    _filter[filter][cond] = value.includes(".")? parseFloat(value) : parseInt(value);
+                }
             }
-            
+
             const resp = await _Model[collection].find()
             .where(query? {...query.filters, ..._filter } : {});
             res.json([
