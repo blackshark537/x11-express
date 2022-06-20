@@ -110,7 +110,7 @@ IE:
     filters[$or][1][data.param2][$regex]=value
 
     //  CONDITIONAL
-    //IE: Get some Object with conditional ($gt, $lt or $eq) Only Numbers param value.
+    //IE: Get some Object with conditional ($gt, $lt or $eq) Only Numbers and Boolean param values.
     filter=data.param&cond=$gt&value=value
     filter=data.param&cond=$lt&value=value
     filter=data.param&cond=$gte&value=value
