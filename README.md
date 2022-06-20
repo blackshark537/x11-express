@@ -2,9 +2,9 @@
 
 ![Demo](https://github.com/blackshark537/x11-express/raw/master/public/x11/imgs/demo.png)
 
-Simple flow dynamic nodejs framework.
+Simple flow dynamic Expressjs framework.
 
-X11-Express uses Drawflow.js to allow you create a backend application easily and quickly.
+X11-Express uses Drawflow.js to allow you create a backend application easy and fast. I think it's a great tool for educational purpose.
 
 ## Features
 - Drag Nodes
