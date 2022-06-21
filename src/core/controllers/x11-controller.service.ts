@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { Crypto, fs } from '../services'
+import { Crypto, File } from '../services'
 import { x11ModelsModule } from '../models'
 import { CustomModelsModule } from '../../models';
 
@@ -22,7 +22,7 @@ export class x11Controller{
     private constructor(){
         //  LOAD APP CONFIG
         try {
-            const file = fs.read('./app-config.json');
+            const file = File.read('./app-config.json');
             this.appConfig = JSON.parse(file);
         } catch (error) {
             throw new Error(error as string);
@@ -43,20 +43,8 @@ export class x11Controller{
             const type: string = collectionNode.data.type;
             const _Model = type === 'x11'? Models : CustomModelsModule; 
 
-            //  CONDITIONAL FILTERING
-            const _filter: KeyValue = {}
-            const { filter, cond, value } = query;
-            if( filter ){
-                _filter[filter] = {};
-                if(value.includes('true') || value.includes('false')){
-                    _filter[filter][cond] = value.includes('true')? true : false;
-                } else {
-                    _filter[filter][cond] = value.includes(".")? parseFloat(value) : parseInt(value);
-                }
-            }
-
             const resp = await _Model[collection].find()
-            .where(query? {...query.filters, ..._filter } : {});
+            .where(query? {...query.filters } : {});
             res.json([
                ...resp
             ]);
@@ -187,6 +175,8 @@ export class x11Controller{
     }
 
     private format = (node: KeyValue, body: KeyValue)=>{
+        if( node['type'] === PropTypes.STRING)
+            return body[node['name']].toLowerCase();
         if( node['type'] === PropTypes.DATE)
             return new Date(body[node['name']]);
         if( node['type'] === PropTypes.ENCRYPTED)

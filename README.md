@@ -52,9 +52,10 @@ npm start:dev
 ### Middleware
 Middleware Function
 ```javascript
-    (req: Request, res: Response, next: NextFunction) => {
+    "Example": (req: Request, res: Response, next: NextFunction)=>{
+        console.log("Hello World! from middleware", req.query);
         next();
-    }
+    },
 ```
 
 middleware classes
@@ -63,13 +64,6 @@ Parameter | Type | Description
 `req` | Object | Express request
 `res` | Object | Express response
 `next` | Object | Express next
-`Crypto` | Class | To achive encryptions.
-`Crypto.encrypt(data: any)` | Function | To encrypt data.
-`Crypto.compare(data: any, hash: string)` | Function | returns a boolean.
-`fs` | Class | To save read and append a file.
-`fs.read(path: string)` | Function | To read a file.
-`fs.write(path: string, data: any)` | Function | To write a file.
-`fs.append(path: string, data: any)` | Function | Append to a file.
 
 ### MongoDB Data Model
 Parameter | Type | Description
@@ -110,12 +104,15 @@ IE:
     filters[$or][1][data.param2][$regex]=value
 
     //  CONDITIONAL
-    //IE: Get some Object with conditional ($gt, $lt or $eq) Only Numbers and Boolean param values.
-    filter=data.param&cond=$gt&value=value
-    filter=data.param&cond=$lt&value=value
-    filter=data.param&cond=$gte&value=value
-    filter=data.param&cond=$lte&value=value
-    filter=data.param&cond=$eq&value=value
+    //IE: Get some Object with conditional ($gt, $lt) Only Numbers param values.
+   filters[data.param][$lt]=number
+   filters[data.param][$gt]=number
+   filters[data.param][$lte]=number
+   filters[data.param][$gte]=number
+
+    //IE: Get some Object with conditional ($eq) Boolean param values.
+   filters[data.param][$eq]=true
+   filters[data.param][$eq]=false
 ```
 
 ## License

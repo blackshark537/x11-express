@@ -13,7 +13,7 @@ listMiddlewares();
 _import();
 
 //  LOAD MODULES
-let modules = ['Home'];
+let modules = ['App'];
 presentModules();
 //  EDITOR MODE BUTTONS
 const lock = document.getElementById('lock');

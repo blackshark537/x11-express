@@ -15,6 +15,8 @@ import { connect }      from 'mongoose';
 import { AppRoutes }    from './routes';
 import { CoreService }  from './core';
 
+const boolParser = require('express-query-boolean');
+const intParser = require('express-query-int');
 
 // APP CONFIGURATION
 const app: express.Application = express();
@@ -22,7 +24,8 @@ const server: http.Server = http.createServer(app);
 //const debugLog: debug.IDebugger = debug('app');
 
 app.use(express.json());
-
+app.use(boolParser());
+app.use(intParser());
 // STATIC FILES FOLDER
 app.use(express.static('public'));
 

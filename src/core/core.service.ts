@@ -1,10 +1,10 @@
-import  fs from 'fs';
 import express,{
     Request, 
     Response, 
     NextFunction
 } from 'express';
 
+import  { File } from './services';
 import { ControllerModule } from './controllers';
 import { CustomMiddlewaresModule } from '../middlewares';
 import {x11MiddlewareModule} from './middlewares';
@@ -12,7 +12,7 @@ import { KeyValue, iNode } from './interfaces';
 
 export class CoreService{
     
-    private app: express.Application;
+    private app: KeyValue;
 
     constructor(app: express.Application){
         this.app = app;
@@ -21,7 +21,7 @@ export class CoreService{
     compile(){
         try {
             const path = './app-config.json';
-            const file = fs.readFileSync(path, {encoding: 'utf-8'});
+            const file = File.read(path);
             const dfSchema = JSON.parse(file);
             const modules: string[] = Object.keys(dfSchema);
             
@@ -31,7 +31,6 @@ export class CoreService{
                     if(node.name === 'express'){
                         const route = module === '/'? module : '/'+ module + node.data.route;
                         const method = node.data.method;
-                        const _app: KeyValue = this.app;
 
                         const childs: string[] = node.outputs['output_1']['connections'].map(el=> el.node);
                         const controllerNode: iNode = childs.map(child=> dfSchema[module]['data'][child]).find(_node=> _node.class === 'controller');
@@ -74,7 +73,7 @@ export class CoreService{
                                     } else {
                                         middlewareFunctions.push(x11MiddlewareModule[name]);
                                     } */
-                                    _app[method](route, (req: Request, res: Response, next: NextFunction)=>{
+                                    this.app[method](route, (req: Request, res: Response, next: NextFunction)=>{
                                         
                                         if(type==='custom'){
                                             CustomMiddlewaresModule[name](req, res, next);
@@ -94,7 +93,7 @@ export class CoreService{
                             try {
                                 const collections: string[] = controllerNode.outputs['output_1']['connections'].map(el=> el.node);
                                 
-                                (_app[method])(route ,(req: Request, res: Response, next: NextFunction)=>{
+                                (this.app[method])(route ,(req: Request, res: Response, next: NextFunction)=>{
                                     try {
 
                                         const name = controllerNode.data.name;

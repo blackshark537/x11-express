@@ -1,3 +1,4 @@
+
 export interface x11Model{
     _collection: string;
     data: any;
@@ -42,6 +43,7 @@ export interface iQuery{
 };
 
 export enum PropTypes{
+    STRING='string',
     DATE="date",
     ENCRYPTED="encrypted",
 }

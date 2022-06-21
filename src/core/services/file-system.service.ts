@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync, appendFileSync } from 'fs';
 
-export class fs{
+export class File{
 
     private constructor(){}
     
