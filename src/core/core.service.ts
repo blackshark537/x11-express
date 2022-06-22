@@ -6,7 +6,7 @@ import express,{
 
 import  { File } from './services';
 import { ControllerModule } from './controllers';
-import { CustomMiddlewaresModule } from '../middlewares';
+import { CustomMiddlewaresModule } from '../app/middlewares';
 import {x11MiddlewareModule} from './middlewares';
 import { KeyValue, iNode } from './interfaces';
 

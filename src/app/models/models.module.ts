@@ -1,4 +1,4 @@
-import { KeyValue } from '../core/interfaces';
+import { KeyValue } from '../../core/interfaces';
 //import { model, Schema } from 'mongoose';
 
 /* 

@@ -1,4 +1,4 @@
-import { KeyValue } from "../core/interfaces";
+import { KeyValue } from "../../core/interfaces";
 import { NextFunction, Request, Response } from "express";
 
 export const CustomMiddlewaresModule: KeyValue = { 

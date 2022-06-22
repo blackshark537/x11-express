@@ -5,11 +5,11 @@ import  express, {
     Response, 
     NextFunction
 } from 'express';
-import { HttpCode } from '../core/interfaces';
-import { x11ModelsModule } from '../core/models';
+import { HttpCode } from '../interfaces';
+import { x11ModelsModule } from '../models';
 
-import { CustomModelsModule } from '../models';
-import { CustomMiddlewaresModule } from '../middlewares';
+import { CustomModelsModule } from '../../app/models';
+import { CustomMiddlewaresModule } from '../../app/middlewares';
 
 const configPath = './app-config.json';
 

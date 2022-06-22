@@ -397,7 +397,7 @@ function addProp(x,y){
                 <option selected value="string">String</option>
                 <option value="number">Number</option>
                 <option value="boolean">Boolean</option>
-                <option value="array">Array</option>
+                <!-- <option value="array">Array</option> -->
                 <option value="date">Date</option>
                 <option value="encrypted">Encrypted</option>
             </select>

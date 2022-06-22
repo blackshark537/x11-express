@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { Crypto, File } from '../services'
 import { x11ModelsModule } from '../models'
-import { CustomModelsModule } from '../../models';
+import { CustomModelsModule } from '../../app/models';
 
 import { 
     HttpCode, 

@@ -12,7 +12,7 @@ import 'dotenv/config'
 import  express         from 'express';
 import { iNode }        from './core/interfaces';
 import { connect }      from 'mongoose';
-import { AppRoutes }    from './routes';
+import { AppRoutes }    from './core/routes';
 import { CoreService }  from './core';
 
 const boolParser = require('express-query-boolean');
@@ -49,7 +49,7 @@ const debugLog: debug.IDebugger = debug('app');
 
 app.use(expressWinston.logger(loggerOptions));
 app.set("port", process.env.PORT || 4200);
-app.set("db", process.env.DB  || "x11-Express");
+app.set("db", process.env.DB  || "x11");
 
 // App PORT and DB configutation
 try {
@@ -88,11 +88,18 @@ core.compile();
 connect(`mongodb://localhost:27017/${app.get("db")}`, (error)=>{
     if(error) throw new Error(`${error}`);
     
-    console.log('MongoDB conected...');
 
     const runningMessage = `
-    Server running at http://localhost:${app.get("port")}
-    To start please editing visit http://localhost:${app.get("port")}/x11`;
+*****  MongoDB Conected  *****
+*********************************************************************************
+*
+*   Host: localhost
+*   Port: ${app.get("port")}
+*   DB Name: ${app.get("db")}
+*   Server running at http://localhost:${app.get("port")}
+*   To start please editing visit http://localhost:${app.get("port")}/x11
+*
+*********************************************************************************`;
     
     debugLog(`${runningMessage}`);
 
