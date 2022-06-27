@@ -52,7 +52,7 @@ export class AppRoutes{
         this.app.route('/middleware/code/:key').get((req: Request, res: Response, next: NextFunction)=>{
             try {
                 const key = req.params.key;
-                const path = process.env.PRODUCTION? "./dist/middlewares/middleware.module.js" : "./src/middlewares/middleware.module.ts";
+                const path = process.env.PRODUCTION? "./dist/app/middlewares/middleware.module.js" : "./src/app/middlewares/middleware.module.ts";
                 const file = fs.readFileSync(path, {encoding: 'utf-8'});
 
                 const div1 = file.trim().split(`"${key}":`);

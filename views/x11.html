@@ -31,21 +31,20 @@
     </header>
     <div class="wrapper">
         <div class="col-2" style="height: 90vh; overflow-y: scroll;">
+
             <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="app">
-                <i class="fa-solid fa-rocket"></i><span>App</span>
+                <i class="fa-solid fa-rocket"></i><span> Settings</span>
             </div>
             <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="express">
-                <i class="fa-brands fa-node-js"></i><span> Express</span>
-            </div>
-            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="sendFile">
-                <i class="fa-solid fa-file"></i><span> Send File</span>
+                <i class="fa-brands fa-node-js"></i><span> App</span>
             </div>
             <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="controller">
                 <i class="fa-solid fa-gear"></i><span> Controller</span>
             </div>
-            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="prop">
-                <i class="fa-solid fa-atom"></i><span> Prop</span>
+            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="sendFile">
+                <i class="fa-solid fa-file"></i><span> File (UTF-8)</span>
             </div>
+            
             <!-- X11 COLLECTIONS -->
             <div class="accordion" id="accordionCollection">
                 <div class="accordion-item">
@@ -57,8 +56,11 @@
                     <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionCollection">
                         <div id="collections" class="accordion-body">
                             <ul id="collectionList" class="list-group">
+                                
                             </ul>
-
+                            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="prop">
+                                <i class="fa-solid fa-atom"></i><span> Collection Prop</span>
+                            </div>
                             <div class="d-grid mt-1" >
                                 <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#CollectionModal">
                                     <i class="fa-solid fa-database"></i> <span> New Collection</span>
@@ -164,12 +166,12 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="ModuleModalLabel">@New Module</h5>
+                            <h5 class="modal-title" id="ModuleModalLabel">@New EndPoint</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <label class="form-control-label" for="module-name">Name: </label>
-                            <input type="text" class="form-control" id="module-name" placeholder="Module Name">
+                            <input type="text" class="form-control" id="module-name" placeholder="EndPoint Name">
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -200,6 +202,24 @@
                     </div>
                 </div>
             </div>
+
+            <!-- LOADING MODAL -->
+            <div class="modal fade" id="spinnerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="d-flex justify-content-center">
+                                <div class="d-flex align-items-center">
+                                    <strong>Please Wait...</strong>
+                                    <div class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
         </div>
     </div>

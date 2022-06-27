@@ -56,7 +56,7 @@ try {
     const path = './app-config.json';
     const file = fs.readFileSync(path, {encoding: 'utf-8'});
     const dfSchema = JSON.parse(file);
-    const AppConfig = (Object.values(dfSchema['App']['data']) as iNode[]).find(el=> el.name === 'app');
+    const AppConfig = (Object.values(dfSchema['Settings']['data']) as iNode[]).find(el=> el.name === 'app');
 
     if (AppConfig?.data) { 
         // CORS PERMITION

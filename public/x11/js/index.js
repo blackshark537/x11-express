@@ -13,7 +13,7 @@ listMiddlewares();
 _import();
 
 //  LOAD MODULES
-let modules = ['App'];
+let modules = ['Settings'];
 presentModules();
 //  EDITOR MODE BUTTONS
 const lock = document.getElementById('lock');
@@ -122,7 +122,8 @@ async function createCollection(collection){
 async function listCollections(type="x11"){
     const collectionList = await getCollections(type);
     const list = type==='x11'? document.getElementById('collectionList') : document.getElementById('customCollectionList');
-    
+    list.innerHTML = "";
+
     collectionList.collections.forEach(_collection=>{
         const collection = document.getElementById("collection-name");
         collection.value = _collection;
@@ -192,12 +193,12 @@ function addApp(x,y){
     const data = { "port": 3000, "database": "x11", "usecors": "no"};
     const app = `<div class="card m-0" style="width: 18rem;">
   <div class="card-header">
-    @App Configuration
+    @Settings
   </div>
   <div class="card-body">
     <div class="row">
         <div class="col">
-            <label for="port" class="form-label">App Port:</label>
+            <label for="port" class="form-label">Port:</label>
             <input class="form-control" id="port" name="port" placeholder="App Port ie: 3000 " type="number" df-port>
         </div>
     </div>
@@ -226,7 +227,7 @@ function addExpress(x,y) {
     let express = `
 <div class="card m-0" style="width: 18rem;">
   <div class="card-header">
-    @Express
+    @App
   </div>
   <div class="card-body">
     <div class="row">
@@ -258,13 +259,13 @@ function sendFile(x,y) {
     let express = `
 <div class="card m-0" style="width: 18rem;">
   <div class="card-header">
-    @Send File
+    @File (UTF-8)
   </div>
   <div class="card-body">
     <div class="row">
         <div class="col">
-            <label for="filename" class="form-control-label">Path</label>
-            <input class="form-control" id="filename" name="filename" type="text" df-path>
+            <label for="filename" class="form-control-label">Path to the file</label>
+            <input class="form-control" id="filename" placeholder="Path" name="filename" type="text" df-path>
         </div>
     </div>
   </div>
@@ -355,7 +356,7 @@ editor.addNode('schema', 1, 0, x, y, 'schema', data, schema);
 async function addScheme(x, y, name){
     const collection = name? name : document.getElementById("collection-name").value;
     await createCollection(collection);
-
+    waitToOnline();
     let data = { "schema": `${collection}`, "type": "x11" }
     const schema = `
 <div class="card m-0" style="width: 18rem;">
@@ -456,8 +457,10 @@ function _export(){
     }).then(resp=> resp.json())
     .then(result=> {
         confirm("Data Exported");
-        console.log(result)
+        console.log(result);
     });
+
+    waitToOnline();
 }
 
 //  MODULES
@@ -495,7 +498,28 @@ function presentModules(){
         const template = `<li class="text-dark" onclick="editor.changeModule('${el}'); changeModule(event);">${el}</li>`;
         ul.innerHTML += template;
     })
-    ul.innerHTML += `<li class="text-dark"  data-bs-toggle="modal" data-bs-target="#ModuleModal">+</li>`
-    ul.innerHTML += `<li class="text-dark" onclick="remModule()">-</li>`
+    ul.innerHTML += `<li title="Add EndPoint" class="text-dark"  data-bs-toggle="modal" data-bs-target="#ModuleModal">+</li>`
+    ul.innerHTML += `<li title="Rem EndPoint" class="text-dark" onclick="remModule()">-</li>`
+}
+
+function waitToOnline(){
+    showSpinner();
+    const interval = setInterval(async()=>{
+        await listCollections();
+        clearInterval(interval);
+        hideSpinner();
+    }, 1000);
+}
+
+function showSpinner(){
+    const modalEL = document.getElementById('spinnerModal');
+    const modal = bootstrap.Modal.getOrCreateInstance(modalEL);
+    modal.show();
+}
+
+function hideSpinner(){
+    const modalEL = document.getElementById('spinnerModal');
+    const modal = bootstrap.Modal.getInstance(modalEL);
+    modal.hide();
 }
 
