@@ -1,7 +1,7 @@
 'use strict';
 //  DRAW FLOW
 const id = document.getElementById("drawflow");
-const editor = new Drawflow(id);
+var editor = new Drawflow(id);
 editor.reroute = true;
 editor.zoom_min = 0.4;
 editor.start();
@@ -472,13 +472,28 @@ function addModule(_name){
     el.value = "";
 }
 
+function loadModules(){
+    const exportdata = editor.export();
+    modules = [...Object.keys(exportdata['drawflow'])];
+}
+
 function remModule(){
+    loadModules();
     const resp = confirm("Please Confirm!");
     if(!resp) return;
     if(modules.length <= 1) return;
-    const last = modules.reverse().shift();
-    editor.removeModule(last);
-    presentModules();
+    let all = document.querySelectorAll(".menu ul li");
+    let selected = null;
+    for (let i = 0; i < all.length; i++) {
+        if(all[i].classList.contains('selected')){
+            selected = all[i];
+        }
+    }
+    
+    if(selected){
+        editor.removeModule(selected.innerText);
+        presentModules();
+    }
 }
 
 function changeModule(event) {
@@ -490,8 +505,7 @@ function changeModule(event) {
 }
 
 function presentModules(){
-    const exportdata = editor.export();
-    modules = Object.keys(exportdata['drawflow']);
+    loadModules();
     const ul = document.querySelector('#modules');
     ul.innerHTML = "";
     modules.forEach(el=>{

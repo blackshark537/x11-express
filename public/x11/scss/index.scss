@@ -86,7 +86,8 @@ header a {
 }
 
 .menu ul li.selected {
-  font-weight: bold;
+  font-weight: bolder !important;
+  color:  #804eff !important;
 }
 
 .btn-export {
