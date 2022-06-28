@@ -48,7 +48,7 @@ if (!process.env.DEBUG) {
 const debugLog: debug.IDebugger = debug('app');
 
 app.use(expressWinston.logger(loggerOptions));
-app.set("port", process.env.PORT || 4200);
+app.set("port", process.env.PORT || 3000);
 app.set("db", process.env.DB  || "x11");
 
 // App PORT and DB configutation
@@ -71,8 +71,8 @@ try {
         
         fs.writeFileSync(".env", envFile, {encoding: 'utf-8'});
 
-        app.set("port", process.env.PORT || 4200);
-        app.set("db", process.env.DB  || "x11-Express");
+        app.set("port", process.env.PORT);
+        app.set("db", process.env.DB);
     }
 } catch (error) {
     throw new Error(`${error}`);

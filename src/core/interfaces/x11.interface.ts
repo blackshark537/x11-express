@@ -44,6 +44,8 @@ export interface iQuery{
 
 export enum PropTypes{
     STRING='string',
+    NUMBER='number',
+    BOOLEAN='boolean',
     DATE="date",
     ENCRYPTED="encrypted",
 }

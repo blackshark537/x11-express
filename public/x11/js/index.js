@@ -127,7 +127,7 @@ async function listCollections(type="x11"){
     collectionList.collections.forEach(_collection=>{
         const collection = document.getElementById("collection-name");
         collection.value = _collection;
-        list.innerHTML += `<li class="list-group-item" ><div class="" draggable="true" ondragstart="drag(event)" data-node="${_collection}-${type}-schema">
+        list.innerHTML += `<li class="list-group-item" ><div draggable="true" ondragstart="drag(event)" data-node="${_collection}-${type}-schema">
         <i class="fa-solid fa-database mr-1"></i> <span>${_collection}</span>
     </div></li>`;
     })
@@ -378,7 +378,7 @@ editor.addNode('x11-schema', 1, 1, x, y, 'x11-schema', data, schema);
 }
 
 function addProp(x,y){
-    let prop_data = {"type": "string", "name": ""};
+    let prop_data = {"type": "string", "name": "", "default": "", "required": "no"};
     let prop = `
 <div class="card m-0" style="width: 18rem;">
   <div class="card-header">
@@ -386,14 +386,14 @@ function addProp(x,y){
   </div>
   <div class="card-body">
     <div class="row">
-    <div class="col">
-        <label for="Prop name" class="form-label">Prop name:</label>
-        <input type="text" class="form-control" placeholder="Prop name" aria-label="Prop name" df-name>
-    </div>
+        <div class="col">
+            <label for="Prop name" class="form-label">Name:</label>
+            <input type="text" class="form-control" placeholder="Prop name" aria-label="Prop name" df-name>
+        </div>
     </div>
     <div class="row">
         <div class="col">
-            <label for="Type" class="form-label">Prop type:</label>
+            <label for="Type" class="form-label">Type:</label>
             <select class="form-select form-select-sm" aria-label="Type" df-type>
                 <option selected value="string">String</option>
                 <option value="number">Number</option>
@@ -402,6 +402,21 @@ function addProp(x,y){
                 <option value="date">Date</option>
                 <option value="encrypted">Encrypted</option>
             </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="required" class="form-label">Required:</label>
+            <select class="form-select form-select-sm" aria-label="required" df-required>
+                <option selected value="no">No</option>
+                <option value="yes">Yes</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="default" class="form-label">Default:</label>
+            <input type="text" class="form-control" placeholder="default value" aria-label="default" df-default>
         </div>
     </div>
   </div>

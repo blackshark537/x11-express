@@ -1,17 +1,13 @@
 import { KeyValue } from '../../core/interfaces';
-//import { model, Schema } from 'mongoose';
 
-/* 
-Example:
-export const dataSchema = new Schema({
-    fname: {type: String},
-    lname: {type: String},
-    email: {type: String},
-    createdAt: {type: Date, default: Date.now},
-    updatedAt: {type: Date, default: Date.now},
-}); 
-*/
+//Example:
+/* import { model, Schema } from 'mongoose';
+export const heroSchema = new Schema({
+    name: {type: String, required: true, },
+    power: {type: String}
+});  */
+
 
 export const CustomModelsModule: KeyValue = {
-    /* 'customCustomers': model('custom-customers', dataSchema ), */
+    //'Hero': model('hero', heroSchema ),
 }

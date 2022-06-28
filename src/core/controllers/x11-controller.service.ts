@@ -101,13 +101,14 @@ export class x11Controller{
                 prop_nodes.forEach(node=>{
                     const propNode: iNode = module[node];
                     const data_node: KeyValue = propNode.data;
+                    data[data_node['name']] = this.parseDefaultValues(data_node, body);
                     this.checkType(data_node, body);
                     data[data_node['name']] = this.format(data_node, body);
                 });
                 const newModel = new Models[collection]({
                     data: data
                 });
-                const result = await newModel.save();
+                const result = newModel//await newModel.save();
                 res.json(result);
             } else {
                 const newModel = new CustomModelsModule[collection]({
@@ -174,7 +175,8 @@ export class x11Controller{
     
     }
 
-    private format = (node: KeyValue, body: KeyValue)=>{
+    private format(node: KeyValue, body: KeyValue): string | Date {
+        if(!body[node['name']]) return body[node['name']];
         if( node['type'] === PropTypes.STRING)
             return body[node['name']].toLowerCase();
         if( node['type'] === PropTypes.DATE)
@@ -185,11 +187,33 @@ export class x11Controller{
         return body[node['name']];
     }
 
-    private checkType(data_node: KeyValue, body: KeyValue){
-        if(typeof(body[data_node['name']]) != data_node['type']){
-            throw Error(data_node['name'] + " value type is not "+ data_node['type']);
+    private checkType(node: KeyValue, body: KeyValue): void{
+        if(node['required']==='no') return;
+        if(typeof(body[node['name']]) != node['type']){
+            throw Error(node['name'] + " value type is not "+ node['type']);
         }
         return;
+    }
+
+    private parseDefaultValues(node: KeyValue, body: KeyValue): any{
+        console.log(node, body)
+        
+        if(!node['default'] || body[node['name']] ) return body[node['name']];
+
+        switch (node['type']) {
+            case PropTypes.NUMBER:
+                body[node['name']] = parseFloat(node['default']);
+                break;
+            case PropTypes.DATE:
+                body[node['name']] = new Date(node['default']);
+                break;
+            case PropTypes.BOOLEAN:
+                body[node['name']] = node['default'].includes('true')? true : false;
+                break;
+            default:
+                break;
+        }
+        return body[node['name']];
     }
 
     private async showError(res: Response, error: any){

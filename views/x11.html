@@ -55,17 +55,23 @@
                     </h2>
                     <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionCollection">
                         <div id="collections" class="accordion-body">
-                            <ul id="collectionList" class="list-group">
-                                
-                            </ul>
-                            <div class="drag-drawflow" draggable="true" ondragstart="drag(event)" data-node="prop">
-                                <i class="fa-solid fa-atom"></i><span> Collection Prop</span>
-                            </div>
                             <div class="d-grid mt-1" >
                                 <button class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#CollectionModal">
                                     <i class="fa-solid fa-database"></i> <span> New Collection</span>
                                 </button>
                             </div>
+                            
+                            <ul id="collectionList" class="list-group">
+                                
+                            </ul>
+                            
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <div draggable="true" ondragstart="drag(event)" data-node="prop">
+                                        <i class="fa-solid fa-atom"></i><span> Collection Prop</span>
+                                    </div>
+                                </li>
+                            </ul>
                         </div>
                     </div> 
                 </div>
