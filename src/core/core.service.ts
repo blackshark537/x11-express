@@ -66,6 +66,7 @@ export class CoreService{
                             middlewareNodes.map(middlewareNode=>{
                                 try {
                                     const path = middlewareNode.data.path;
+                                    const compare = middlewareNode.data.compare;
                                     const name = middlewareNode.data.name;
                                     const type = middlewareNode.data.type;
                                     /* if(type==='custom'){
@@ -79,6 +80,7 @@ export class CoreService{
                                             CustomMiddlewaresModule[name](req, res, next);
                                         } else {
                                             req.query.path = path;
+                                            req.query.compare = compare;
                                             x11MiddlewareModule[name](req, res, next);
                                         }
                                         
