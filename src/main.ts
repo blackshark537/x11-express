@@ -91,15 +91,16 @@ connect(`mongodb://localhost:27017/${app.get("db")}`, (error)=>{
 
     const runningMessage = `
 *****  MongoDB Conected  *****
-*********************************************************************************
+*******************************************************************************
 *
+*   Author: Blackshark537
 *   Host: localhost
 *   Port: ${app.get("port")}
 *   DB Name: ${app.get("db")}
 *   Server running at http://localhost:${app.get("port")}
-*   To start please editing visit http://localhost:${app.get("port")}/x11
+*   To start editing please visit http://localhost:${app.get("port")}/x11
 *
-*********************************************************************************`;
+*******************************************************************************`;
     
     debugLog(`${runningMessage}`);
 

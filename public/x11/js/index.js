@@ -199,13 +199,13 @@ function addApp(x,y){
     <div class="row">
         <div class="col">
             <label for="port" class="form-label">Port:</label>
-            <input class="form-control" id="port" name="port" placeholder="App Port ie: 3000 " type="number" df-port>
+            <input class="form-control" id="port" name="port" placeholder="App Port ie: 3000 (required) " type="number" df-port>
         </div>
     </div>
     <div class="row">
         <div class="col">
             <label for="uri" class="form-label">Database Name:</label>
-            <input class="form-control" id="uri" name="uri" type="text" placeholder="Database" df-database>
+            <input class="form-control" id="uri" name="uri" type="text" placeholder="Database (required)" df-database>
         </div>
     </div>
     <div class="row">
@@ -265,7 +265,7 @@ function sendFile(x,y) {
     <div class="row">
         <div class="col">
             <label for="filename" class="form-control-label">Path to the file</label>
-            <input class="form-control" id="filename" placeholder="Path" name="filename" type="text" df-path>
+            <input class="form-control" id="filename" placeholder="Path field (required)" name="filename" type="text" df-path>
         </div>
     </div>
   </div>
@@ -354,6 +354,10 @@ editor.addNode('schema', 1, 0, x, y, 'schema', data, schema);
 }
 
 async function addScheme(x, y, name){
+    if(!name){
+        alert("Error: the field name is required.");
+        return;
+    }
     const collection = name? name : document.getElementById("collection-name").value;
     await createCollection(collection);
     waitToOnline();
@@ -482,6 +486,10 @@ function _export(){
 function addModule(_name){
     const el = document.getElementById('module-name');
     const name = el.value;
+    if(!name){
+        alert("Error: the field name is required.");
+        return;
+    }
     editor.addModule(name);
     presentModules();
     el.value = "";
