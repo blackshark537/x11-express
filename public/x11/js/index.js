@@ -238,8 +238,8 @@ function addExpress(x,y) {
     </div>
     <div class="row">
         <div class="col">
-            <label for="Request" class="form-label">Request:</label>
-            <select class="form-select form-select-sm" aria-label="Request" df-method>
+            <label for="Method" class="form-label">HTTP Method:</label>
+            <select class="form-select form-select-sm" aria-label="Method" df-method>
             <option selected value="get">GET</option>
             <option value="post">POST</option>
             <option value="put">PUT</option>
@@ -287,8 +287,8 @@ function addController(x,y, name="x11"){
             <div class="col">
                 <label for="Controller" class="form-label">Action:</label>
                 <select class="form-select form-select-sm" aria-label="Controller" df-func>
-                <option selected value="findAll">FindAll</option>
-                <option value="findOne">FindOne</option>
+                <option selected value="findAll">GetAll</option>
+                <option value="findOne">GetOneById</option>
                 <option value="create">Create</option>
                 <option value="update">Update</option>
                 <option value="delete">Delete</option>
